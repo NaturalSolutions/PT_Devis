@@ -1,0 +1,6 @@
+Front/node_modules/
+Front/bower_components/
+Front/build/
+Front/app/config.js
+Back/pt_devis/obj/Debug
+.vs/
