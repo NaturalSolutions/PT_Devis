@@ -1,0 +1,204 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="DevisModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Ressource">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Mail" Type="nvarchar(max)" />
+          <Property Name="Initial" Type="nvarchar" MaxLength="4" Nullable="false" />
+          <Property Name="Niveau" Type="int" />
+        </EntityType>
+        <EntityType Name="Tarification">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Tar3" Type="decimal" Precision="18" Scale="0" />
+          <Property Name="Tar5" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Tarification_Ressource">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FK_Ressource" Type="bigint" Nullable="false" />
+          <Property Name="FK_Tarification" Type="bigint" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Tarification">
+          <End Role="Tarification" Type="Self.Tarification" Multiplicity="1" />
+          <End Role="Tarification_Ressource" Type="Self.Tarification_Ressource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tarification">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Tarification_Ressource">
+              <PropertyRef Name="FK_Tarification" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tarification_Ressources">
+          <End Role="Ressource" Type="Self.Ressource" Multiplicity="1" />
+          <End Role="Tarification_Ressource" Type="Self.Tarification_Ressource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ressource">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Tarification_Ressource">
+              <PropertyRef Name="FK_Ressource" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DevisModelStoreContainer">
+          <EntitySet Name="Ressource" EntityType="Self.Ressource" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tarification" EntityType="Self.Tarification" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tarification_Ressource" EntityType="Self.Tarification_Ressource" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Tarification" Association="Self.FK_Tarification">
+            <End Role="Tarification" EntitySet="Tarification" />
+            <End Role="Tarification_Ressource" EntitySet="Tarification_Ressource" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tarification_Ressources" Association="Self.FK_Tarification_Ressources">
+            <End Role="Ressource" EntitySet="Ressource" />
+            <End Role="Tarification_Ressource" EntitySet="Tarification_Ressource" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="DevisModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Ressource">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Mail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Initial" Type="String" MaxLength="4" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Niveau" Type="Int32" />
+          <NavigationProperty Name="Tarification_Ressource" Relationship="Self.FK_Tarification_Ressources" FromRole="Ressource" ToRole="Tarification_Ressource" />
+        </EntityType>
+        <EntityType Name="Tarification">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Tar3" Type="Decimal" Precision="18" Scale="0" />
+          <Property Name="Tar5" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+          <NavigationProperty Name="Tarification_Ressource" Relationship="Self.FK_Tarification" FromRole="Tarification" ToRole="Tarification_Ressource" />
+        </EntityType>
+        <EntityType Name="Tarification_Ressource">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FK_Ressource" Type="Int64" Nullable="false" />
+          <Property Name="FK_Tarification" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="Ressource" Relationship="Self.FK_Tarification_Ressources" FromRole="Tarification_Ressource" ToRole="Ressource" />
+          <NavigationProperty Name="Tarification" Relationship="Self.FK_Tarification" FromRole="Tarification_Ressource" ToRole="Tarification" />
+        </EntityType>
+        <Association Name="FK_Tarification_Ressources">
+          <End Role="Ressource" Type="Self.Ressource" Multiplicity="1" />
+          <End Role="Tarification_Ressource" Type="Self.Tarification_Ressource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Ressource">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Tarification_Ressource">
+              <PropertyRef Name="FK_Ressource" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Tarification">
+          <End Role="Tarification" Type="Self.Tarification" Multiplicity="1" />
+          <End Role="Tarification_Ressource" Type="Self.Tarification_Ressource" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tarification">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="Tarification_Ressource">
+              <PropertyRef Name="FK_Tarification" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="DevisEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Ressource" EntityType="Self.Ressource" />
+          <EntitySet Name="Tarification" EntityType="Self.Tarification" />
+          <EntitySet Name="Tarification_Ressource" EntityType="Self.Tarification_Ressource" />
+          <AssociationSet Name="FK_Tarification_Ressources" Association="Self.FK_Tarification_Ressources">
+            <End Role="Ressource" EntitySet="Ressource" />
+            <End Role="Tarification_Ressource" EntitySet="Tarification_Ressource" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Tarification" Association="Self.FK_Tarification">
+            <End Role="Tarification" EntitySet="Tarification" />
+            <End Role="Tarification_Ressource" EntitySet="Tarification_Ressource" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="DevisModelStoreContainer" CdmEntityContainer="DevisEntities">
+          <EntitySetMapping Name="Ressource">
+            <EntityTypeMapping TypeName="DevisModel.Ressource">
+              <MappingFragment StoreEntitySet="Ressource">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Mail" ColumnName="Mail" />
+                <ScalarProperty Name="Initial" ColumnName="Initial" />
+                <ScalarProperty Name="Niveau" ColumnName="Niveau" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tarification">
+            <EntityTypeMapping TypeName="DevisModel.Tarification">
+              <MappingFragment StoreEntitySet="Tarification">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Tar3" ColumnName="Tar3" />
+                <ScalarProperty Name="Tar5" ColumnName="Tar5" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tarification_Ressource">
+            <EntityTypeMapping TypeName="DevisModel.Tarification_Ressource">
+              <MappingFragment StoreEntitySet="Tarification_Ressource">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="FK_Ressource" ColumnName="FK_Ressource" />
+                <ScalarProperty Name="FK_Tarification" ColumnName="FK_Tarification" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="DevisModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Ressource">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Mail" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Initial" Type="String" MaxLength="4" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Niveau" Type="Int32" />
+    <NavigationProperty Name="Tarification_Ressource" Relationship="Self.FK_Tarification_Ressources" FromRole="Ressource" ToRole="Tarification_Ressource" />
+  </EntityType>
+  <EntityType Name="Tarification">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Type" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Tar3" Type="Decimal" Precision="18" Scale="0" />
+    <Property Name="Tar5" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
+    <NavigationProperty Name="Tarification_Ressource" Relationship="Self.FK_Tarification" FromRole="Tarification" ToRole="Tarification_Ressource" />
+  </EntityType>
+  <EntityType Name="Tarification_Ressource">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FK_Ressource" Type="Int64" Nullable="false" />
+    <Property Name="FK_Tarification" Type="Int64" Nullable="false" />
+    <NavigationProperty Name="Ressource" Relationship="Self.FK_Tarification_Ressources" FromRole="Tarification_Ressource" ToRole="Ressource" />
+    <NavigationProperty Name="Tarification" Relationship="Self.FK_Tarification" FromRole="Tarification_Ressource" ToRole="Tarification" />
+  </EntityType>
+  <Association Name="FK_Tarification_Ressources">
+    <End Role="Ressource" Type="Self.Ressource" Multiplicity="1" />
+    <End Role="Tarification_Ressource" Type="Self.Tarification_Ressource" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Ressource">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Tarification_Ressource">
+        <PropertyRef Name="FK_Ressource" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Tarification">
+    <End Role="Tarification" Type="Self.Tarification" Multiplicity="1" />
+    <End Role="Tarification_Ressource" Type="Self.Tarification_Ressource" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tarification">
+        <PropertyRef Name="ID" />
+      </Principal>
+      <Dependent Role="Tarification_Ressource">
+        <PropertyRef Name="FK_Tarification" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="DevisEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Ressource" EntityType="Self.Ressource" />
+    <EntitySet Name="Tarification" EntityType="Self.Tarification" />
+    <EntitySet Name="Tarification_Ressource" EntityType="Self.Tarification_Ressource" />
+    <AssociationSet Name="FK_Tarification_Ressources" Association="Self.FK_Tarification_Ressources">
+      <End Role="Ressource" EntitySet="Ressource" />
+      <End Role="Tarification_Ressource" EntitySet="Tarification_Ressource" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Tarification" Association="Self.FK_Tarification">
+      <End Role="Tarification" EntitySet="Tarification" />
+      <End Role="Tarification_Ressource" EntitySet="Tarification_Ressource" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

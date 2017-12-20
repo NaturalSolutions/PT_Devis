@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="DevisModelStoreContainer" CdmEntityContainer="DevisEntities">
+    <EntitySetMapping Name="Ressource">
+      <EntityTypeMapping TypeName="DevisModel.Ressource">
+        <MappingFragment StoreEntitySet="Ressource">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Mail" ColumnName="Mail" />
+          <ScalarProperty Name="Initial" ColumnName="Initial" />
+          <ScalarProperty Name="Niveau" ColumnName="Niveau" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Tarification">
+      <EntityTypeMapping TypeName="DevisModel.Tarification">
+        <MappingFragment StoreEntitySet="Tarification">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="Tar3" ColumnName="Tar3" />
+          <ScalarProperty Name="Tar5" ColumnName="Tar5" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Tarification_Ressource">
+      <EntityTypeMapping TypeName="DevisModel.Tarification_Ressource">
+        <MappingFragment StoreEntitySet="Tarification_Ressource">
+          <ScalarProperty Name="ID" ColumnName="ID" />
+          <ScalarProperty Name="FK_Ressource" ColumnName="FK_Ressource" />
+          <ScalarProperty Name="FK_Tarification" ColumnName="FK_Tarification" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

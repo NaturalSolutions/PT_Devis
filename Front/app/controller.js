@@ -1,8 +1,7 @@
 define(['marionette', 'config',
 	'./base/home/lyt-home',
 ], function (Marionette, config,
-	LytHome, LytInte, LytConsult, LytModif, LytCreatLots, LytLanguage, LytLanguageManaging, LytCreat, LytTypes, LytTypeManaging, LytTypeRegles, LytContext
-
+	LytHome
 ) {
 		'use strict';
 		return Marionette.Object.extend({
@@ -14,18 +13,7 @@ define(['marionette', 'config',
 			},
 
 			home: function () {
-				//Backbone.history.navigate('');
 				this.rgMain.show(new LytHome());
 			},
-			// consultation: function (options) {
-			// 	this.rgMain.show(new LytConsult({ key: options }));
-			// },
-			// modification: function (options) {
-			// 	if (this.options.app.user.get('status') == 'Administrateur' && config.isCore) {
-			// 		this.rgMain.show(new LytModif({ key: options }));
-			// 	} else {
-			// 		window.location = '#home';
-			// 	}
-			// },
 		});
 	});

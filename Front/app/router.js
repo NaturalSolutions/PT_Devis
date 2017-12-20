@@ -4,8 +4,8 @@
 	- set login as marionette.application
 
 **/
-define(['jquery', 'marionette', 'backbone', 'config', './base/login/lyt-login', './base/header/lyt-header'],
-	function($, Marionette, Backbone, config, LytLogin, LytHeader){
+define(['jquery', 'marionette', 'backbone', 'config', './base/header/lyt-header'],
+	function($, Marionette, Backbone, config, LytHeader){
 
 	'use strict';
 	return Marionette.AppRouter.extend({

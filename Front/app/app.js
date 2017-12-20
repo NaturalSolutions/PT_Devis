@@ -12,7 +12,7 @@ function(Marionette, Backbone,Lyt_rootview, Router, Controller, config) {
 	app = new Marionette.Application();
 
 	app.on('start', function() {
-		app.rootView = new Lyt_rootview({language:app.user.get('language')});
+		app.rootView = new Lyt_rootview();
 		app.rootView.render();
 		app.controller = new Controller({app : app});
 		app.router = new Router({controller: app.controller, app: app});

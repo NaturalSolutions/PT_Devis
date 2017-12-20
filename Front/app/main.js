@@ -12,6 +12,7 @@ require.config({
 		'collections': './collections',
 		'templates': '../build/templates',
 		'lyt-rootview': './base/rootview/lyt-rootview',
+		'lyt-header': './base/header/lyt-header',
 		'transition-region': './base/transition-region/transition-region',
 		'translater': 'translater',
 
@@ -40,6 +41,9 @@ require.config({
 		'growl': '../bower_components/growl/javascripts/jquery.growl',
 		'sweetAlert': '../bower_components/sweetalert/lib/sweet-alert.min',
 		'i18n': './vendors/i18n/i18next',
+
+		/*==========  Bower  ==========*/
+		'PT_DataAccess': 'modules/init/PT_DataAcess',		
 
 	},
 
@@ -89,4 +93,6 @@ require(['app', 'templates', 'translater', 'config'], function (app, templates, 
 	var x = document.cookie;
 	var _this = this;
 	var userDatas;
+	app.start();
+	this.translater = Translater.getTranslater();
 });
