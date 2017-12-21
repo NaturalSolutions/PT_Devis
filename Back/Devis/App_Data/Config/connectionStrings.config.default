@@ -1,0 +1,4 @@
+<connectionStrings>
+    <!--<add name="DevisEntities" connectionString="metadata=res://*/Models.Devis.csdl|res://*/Models.Devis.ssdl|res://*/Models.Devis.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=SCHTROUDEL-PRO\TOMSQL;initial catalog=DevisBase;persist security info=True;user id=NsApp;password=Fuck2000More;MultipleActiveResultSets=True;App=EntityFramework&quot;" providerName="System.Data.EntityClient" />-->
+    <add name="DevisEntities" connectionString="metadata=res://*/Models.Devis.csdl|res://*/Models.Devis.ssdl|res://*/Models.Devis.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=SCHTROUDEL2000\ZONZ;initial catalog=DevisBase;persist security info=True;user id=NsApp;password=Fuck2000More;multipleactiveresultsets=True;application name=EntityFramework&quot;" providerName="System.Data.EntityClient" />
+  </connectionStrings>
