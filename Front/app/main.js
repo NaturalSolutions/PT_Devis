@@ -14,7 +14,7 @@ require.config({
 		'lyt-rootview': './base/rootview/lyt-rootview',
 		'transition-region': './base/transition-region/transition-region',
 		'translater': 'translater',
-		'lyt-header': './base/header/lyt-header',
+		//'lyt-header': './base/header/lyt-header',
 
 
 		/*==========  NS modules  ==========*/

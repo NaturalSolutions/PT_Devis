@@ -6,7 +6,7 @@ define(['marionette',
   'jqueryui',
   'i18n',
   'config',
-'lyt-header'],
+'base/header/lyt-header'],
 function(Marionette, _, TransitionRegion, Translater, jQuery, ui, I18n,config, LytHeader) {
 	'use strict';
 
