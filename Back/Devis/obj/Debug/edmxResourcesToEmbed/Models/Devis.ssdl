@@ -18,6 +18,7 @@
     <Property Name="Type" Type="nvarchar" MaxLength="255" Nullable="false" />
     <Property Name="Tar3" Type="decimal" Precision="18" Scale="0" />
     <Property Name="Tar5" Type="decimal" Precision="18" Scale="0" Nullable="false" />
+    <Property Name="IsAmo" Type="bit" />
   </EntityType>
   <EntityType Name="Tarification_Ressource">
     <Key>

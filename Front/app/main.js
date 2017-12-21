@@ -12,9 +12,9 @@ require.config({
 		'collections': './collections',
 		'templates': '../build/templates',
 		'lyt-rootview': './base/rootview/lyt-rootview',
-		'lyt-header': './base/header/lyt-header',
 		'transition-region': './base/transition-region/transition-region',
 		'translater': 'translater',
+		'lyt-header': './base/header/lyt-header',
 
 
 		/*==========  NS modules  ==========*/

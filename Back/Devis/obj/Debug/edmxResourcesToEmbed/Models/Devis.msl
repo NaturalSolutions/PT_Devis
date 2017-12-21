@@ -15,6 +15,7 @@
     <EntitySetMapping Name="Tarification">
       <EntityTypeMapping TypeName="DevisModel.Tarification">
         <MappingFragment StoreEntitySet="Tarification">
+          <ScalarProperty Name="IsAmo" ColumnName="IsAmo" />
           <ScalarProperty Name="ID" ColumnName="ID" />
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="Tar3" ColumnName="Tar3" />

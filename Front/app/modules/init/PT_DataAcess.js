@@ -92,8 +92,9 @@ function getTasksInfos(projectId,storyId){
 			alert("Cannot get data");
 		}
 	});
-	var ressource = {};
+	var ressource = [];
 	//On assigne les différentes informations aux taches (durée, éxecutant, imgCllass)
+	console.log('ok', myTempTasks)
 	$.each(myTempTasks, function () {
 		if (!this.complete) {
 			var regexPP = /\d(\+\d)+$/;
@@ -120,10 +121,10 @@ function getTasksInfos(projectId,storyId){
 								alert('La tâche PairProg de la storie n° : ' + storyId + ' contient une malformation1');
 							}else{
 								for(var i in owners){
-									if(!ressource["" + owners[i]]){
-										ressource["" + owners[i]] = parseInt(tabDuree[i]);
+									if(!ressource.find(x => x.initials == owners[i])){
+										ressource.push({initials : owners[i], value : parseInt(tabDuree[i])});
 									}else{
-										ressource["" + owners[i]] += parseInt(tabDuree[i]);
+										ressource[ressource.findIndex(x => x.initials == owners[i])].value += parseInt(tabDuree[i]);
 									}
 								}
 							}
@@ -143,19 +144,20 @@ function getTasksInfos(projectId,storyId){
 						if (this.description.trim().match(regexPP)) {
 							var taskMemeber = regexPP.exec(this.description.trim())[0];
 							var owner_initial = taskMemeber;
-							if(!ressource["" + taskMemeber]){
-								ressource["" + taskMemeber] = parseInt(duree);
+							if(!ressource.find(x => x.initials == taskMemeber)){
+								ressource.push({initials : taskMemeber, value : parseInt(duree)});
 							}else{
-								ressource["" + taskMemeber] += parseInt(duree);
-							}
+								ressource[ressource.findIndex(x => x.initials == taskMemeber)].value += parseInt(duree);
+							}							
 							this.description = this.description.trim().replace(regexPP, "");
 						} else if (memberInitial || taskMemeber) {
-							var owner_initial = (memberInitial ? memberInitial : taskMemeber);
-							if(!ressource["" + owner_initial]){
-								ressource["" + owner_initial] = parseInt(duree);
+							var owner_initial = (memberInitial ? memberInitial : taskMemeber);		
+							if(!ressource.find(x => x.initials == owner_initial)){
+								ressource.push({initials : owner_initial, value : parseInt(duree)});
 							}else{
-								ressource["" + owner_initial] += parseInt(duree);
-							}
+								console.log('IMPORTANT', ressource[ressource.findIndex(x => x.initials == owner_initial)]);
+								ressource[ressource.findIndex(x => x.initials == owner_initial)].value += parseInt(duree);
+							}	
 						} else {
 							alert('La tâche de la storie n° : ' + storyId + ' contient une malformation2');
 						}
@@ -176,15 +178,16 @@ function getTasksInfos(projectId,storyId){
 						
 						regexPP = /(\d)+$/;
 						console.log('pdfvcnikjzsdbhngvpî', this.description.trim())
-						if (regexPP.exec(this.description.trim())) {
+						if (regexPP.exec(this.description.trim())) {				
 							var duree = regexPP.exec(this.description.trim())[0];
 							console.log('éopazjefojazf', regexPP.exec(this.description.trim())[0], this.diree)
 							this.description = this.description.trim().replace(regexPP, "");
-							if(!ressource["" + owner_initial]){
-								ressource["" + owner_initial] = parseInt(duree);
+							if(!ressource.find(x => x.initials == owner_initial)){
+								ressource.push({initials : owner_initial, value : parseInt(duree)});
 							}else{
-								ressource["" + owner_initial] += parseInt(duree);
-							}
+								console.log('IMPORTANT', ressource[ressource.findIndex(x => x.initials == owner_initial)]);
+								ressource[ressource.findIndex(x => x.initials == owner_initial)].value += parseInt(duree);
+							}							
 						} else {
 							alert('La tâche de la storie n° : ' + storyId + ' contient une malformation4');
 						}
@@ -198,7 +201,6 @@ function getTasksInfos(projectId,storyId){
 			} else {
 				this.description = this.description.trim();
 				this.isPairProg = false;
-				this.owner_initial = (memberInitial ? memberInitial : null);
 				this.duree = null;
 			}
 		}
@@ -206,23 +208,40 @@ function getTasksInfos(projectId,storyId){
 	return ressource;
 }
 
+function manageResult(result, newInfos){
+	console.log('ijhèèèèèèèèèèèèèèèèèèèèèè',arguments)
+	for(var i in newInfos){
+		if(newInfos[i]){
+		if(result.find(x => x.initials == newInfos[i].initials)){
+			result[result.findIndex(x => x.initials == newInfos[i].initials)].value += parseInt(newInfos[i].value);
+		}else{
+			result.push(newInfos[i]);
+		}
+	}
+	}
+	return result;
+}
+
 function calculateTasks(stories, projectId){
 	//amo part
 	var result = {
-		amo:{},
-		des:{},
-		dev:{}
+		amo:[],
+		des:[],
+		dev:[]
 	};
-
+	console.log('stories', stories)
 	for(var i in stories.des){
-		result.amo = getTasksInfos(projectId, stories.amo[i].id) 
+//		result.amo = manageResult(result.amo,getTasksInfos(projectId, stories.amo[i].id)); 
+		result.amo = manageResult(result.amo,getTasksInfos(projectId, stories.amo[i].id)); 
 	}
 	for(var j in stories.des){
-		result.des = getTasksInfos(projectId, stories.des[i].id) 
+		result.des = manageResult(result.des,getTasksInfos(projectId, stories.des[j].id))
 	}
 	for(var k in stories.dev){
-		result.dev = getTasksInfos(projectId, stories.dev[i].id) 
+		result.dev = manageResult(result.dev,getTasksInfos(projectId, stories.dev[k].id))
+		console.log( JSON.stringify(result.dev))
 	}
-
+	console.log('kjhkjhmhjo^----------------------hkmmhlkymh', result)
+	Backbone.trigger('returnProcess', result);
 	console.log('result', result);
 }

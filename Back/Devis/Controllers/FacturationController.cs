@@ -16,10 +16,24 @@ namespace Devis.Controllers
             return new { truc = "truc"};
         }
 
+        //[ActionName("factu")]
+        //public string GetFactu([FromUri]string initials, [FromUri]int type)
+        //{          
+        //    return JsonConvert.SerializeObject(new Facturation(initials, type), Formatting.Indented);
+        //}
+
         [ActionName("factu")]
-        public string GetFactu([FromUri]string initials, [FromUri]int type)
-        {          
-            return JsonConvert.SerializeObject(new Facturation(initials, type), Formatting.Indented);
+        public string GetFactu(FacturationTotale laFactu)
+        {
+            laFactu.updateValue();
+            return JsonConvert.SerializeObject(laFactu);
+        }
+
+        [ActionName("postfactu")]
+        public string PostFactu(FacturationTotale laFactu)
+        {
+            laFactu.updateValue();
+            return JsonConvert.SerializeObject(laFactu);
         }
     }
 }

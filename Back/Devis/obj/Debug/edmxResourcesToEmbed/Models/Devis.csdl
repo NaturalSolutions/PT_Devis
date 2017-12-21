@@ -20,6 +20,7 @@
     <Property Name="Tar3" Type="Decimal" Precision="18" Scale="0" />
     <Property Name="Tar5" Type="Decimal" Precision="18" Scale="0" Nullable="false" />
     <NavigationProperty Name="Tarification_Ressource" Relationship="Self.FK_Tarification" FromRole="Tarification" ToRole="Tarification_Ressource" />
+    <Property Name="IsAmo" Type="Boolean" />
   </EntityType>
   <EntityType Name="Tarification_Ressource">
     <Key>
