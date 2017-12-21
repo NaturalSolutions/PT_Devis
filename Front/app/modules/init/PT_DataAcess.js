@@ -94,7 +94,6 @@ function getTasksInfos(projectId,storyId){
 	});
 	var ressource = [];
 	//On assigne les différentes informations aux taches (durée, éxecutant, imgCllass)
-	console.log('ok', myTempTasks)
 	$.each(myTempTasks, function () {
 		if (!this.complete) {
 			var regexPP = /\d(\+\d)+$/;
@@ -155,7 +154,6 @@ function getTasksInfos(projectId,storyId){
 							if(!ressource.find(x => x.initials == owner_initial)){
 								ressource.push({initials : owner_initial, value : parseInt(duree)});
 							}else{
-								console.log('IMPORTANT', ressource[ressource.findIndex(x => x.initials == owner_initial)]);
 								ressource[ressource.findIndex(x => x.initials == owner_initial)].value += parseInt(duree);
 							}	
 						} else {
@@ -177,15 +175,12 @@ function getTasksInfos(projectId,storyId){
 						this.description = this.description.trim().replace(regexPP, "");
 						
 						regexPP = /(\d)+$/;
-						console.log('pdfvcnikjzsdbhngvpî', this.description.trim())
 						if (regexPP.exec(this.description.trim())) {				
 							var duree = regexPP.exec(this.description.trim())[0];
-							console.log('éopazjefojazf', regexPP.exec(this.description.trim())[0], this.diree)
 							this.description = this.description.trim().replace(regexPP, "");
 							if(!ressource.find(x => x.initials == owner_initial)){
 								ressource.push({initials : owner_initial, value : parseInt(duree)});
 							}else{
-								console.log('IMPORTANT', ressource[ressource.findIndex(x => x.initials == owner_initial)]);
 								ressource[ressource.findIndex(x => x.initials == owner_initial)].value += parseInt(duree);
 							}							
 						} else {
@@ -209,7 +204,6 @@ function getTasksInfos(projectId,storyId){
 }
 
 function manageResult(result, newInfos){
-	console.log('ijhèèèèèèèèèèèèèèèèèèèèèè',arguments)
 	for(var i in newInfos){
 		if(newInfos[i]){
 		if(result.find(x => x.initials == newInfos[i].initials)){
@@ -229,7 +223,6 @@ function calculateTasks(stories, projectId){
 		des:[],
 		dev:[]
 	};
-	console.log('stories', stories)
 	for(var i in stories.des){
 //		result.amo = manageResult(result.amo,getTasksInfos(projectId, stories.amo[i].id)); 
 		result.amo = manageResult(result.amo,getTasksInfos(projectId, stories.amo[i].id)); 
@@ -239,9 +232,6 @@ function calculateTasks(stories, projectId){
 	}
 	for(var k in stories.dev){
 		result.dev = manageResult(result.dev,getTasksInfos(projectId, stories.dev[k].id))
-		console.log( JSON.stringify(result.dev))
 	}
-	console.log('kjhkjhmhjo^----------------------hkmmhlkymh', result)
 	Backbone.trigger('returnProcess', result);
-	console.log('result', result);
 }

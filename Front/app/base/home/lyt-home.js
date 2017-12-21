@@ -21,13 +21,6 @@ define(['marionette', 'PT_DataAccess', 'i18n'],
 			},
 
 			onShow: function (options) {
-				//id projet devis
-				var epics = getEpics(2136665);
-				console.log('epics', epics);
-				//id premier bon de commande
-				var epicTasks = getEpicStories(2136665, "commande 1");
-				console.log("tasks", epicTasks)
-
 				$.each(this.allProjects, function () {
 					$('#projects').append($('<option>', {
 						value: this.id,
@@ -54,7 +47,6 @@ define(['marionette', 'PT_DataAccess', 'i18n'],
 
 			loadStories: function (e) {
 				var _this = this;
-				console.log(' $(e.currentTarget).find("option:selected").val().toLowerCase()',$(e.currentTarget).find("option:selected").val().toLowerCase())
 				this.stories = getEpicStories(this.projectId, $(e.currentTarget).find("option:selected").val().toLowerCase());
 				var storiesContainer = $('#stories');
 				var amoCont = storiesContainer.find('#amo');
@@ -79,18 +71,15 @@ define(['marionette', 'PT_DataAccess', 'i18n'],
 
 					}
 				})
-				console.log('sorted', _this.sortedStories);
 			},
 
 			process: function () {
 				var ressource = calculateTasks(this.sortedStories, this.projectId);
-				console.log('res', ressource);
 
 			},
 
 			onReturnProcess: function (res) {
 				var _this = this;
-				console.log('hizgefigzief', res);
 				$.ajax({
 					type: 'POST',
 					url: 'http://localhost:8958/api/Facturation/postFactu',
@@ -100,13 +89,11 @@ define(['marionette', 'PT_DataAccess', 'i18n'],
 					_this.factuTotal = data;
 					_this.drawFactu(data);
 					_this.drawRessource(data);
-					console.log('result', data)
 				});
 			},
 
 			drawFactu: function (res) {
 				res = JSON.parse(res);
-				console.log('plus de res', res)
 				var factuTypeContainer = $('#factu').find('#type');
 				var amoCont = factuTypeContainer.find('#amo');
 				amoCont.html('');
@@ -135,14 +122,12 @@ define(['marionette', 'PT_DataAccess', 'i18n'],
 
 			drawRessource: function (res) {
 				res = JSON.parse(res);
-				console.log('plus de res', res)
 				var ressourceContainer = $('#factu').find('#ressource');				
 				ressourceContainer.html('').append('<span>Ressource prix totale</span>');			
 				var tempResstab = [];
 				for(var i in res){
 					tempResstab =  tempResstab.concat(res[i]);
 				}
-				console.log(tempResstab)
 				var mergedDatas = [];
 				for(var i in tempResstab){
 					if(tempResstab[i] != NaN){
@@ -153,7 +138,6 @@ define(['marionette', 'PT_DataAccess', 'i18n'],
 						}
 					}
 				}
-				console.log('mergedDatas',mergedDatas)
 				ressourceContainer.append($('<ul>', {
 					id: 'ulRessources',
 				}));				
