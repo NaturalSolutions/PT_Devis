@@ -1,6 +1,7 @@
 # PT_Devis
 clone  
 cp Front/app/config.js.default -> Front/app/config.js  
+(Mettre l'url de devisApi un fois créé dans iis)
 Front/ npm install  
 Front/ bower install  
 Front/ grunt build  
