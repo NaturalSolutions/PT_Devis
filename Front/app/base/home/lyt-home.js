@@ -82,7 +82,7 @@ define(['marionette', 'PT_DataAccess', 'i18n'],
 				var _this = this;
 				$.ajax({
 					type: 'POST',
-					url: 'http://localhost:8958/api/Facturation/postFactu',
+					url: 'http://localhost/DevisApi/api/Facturation/postFactu',
 					dataType: 'json',
 					data: res
 				}).done(function (data) {

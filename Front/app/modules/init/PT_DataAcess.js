@@ -14,6 +14,12 @@ function getAllProjects() {
 		contentType: 'application/json',
 		processData: false,
 		success: function (data) {
+			console.log('desdatas', data);
+			data.sort(function (a, b) {
+				if (a.name < b.name) return -1;
+				if (a.name > b.name) return 1;
+				return 0;
+			});
 			myProjects = data;
 		},
 		error: function () {
@@ -117,8 +123,9 @@ function getTasksInfos(projectId,storyId){
 							var tabDuree = tabDureeBrut[0].split('+');
 
 							if(tabDuree.length != owners.length){
-								alert('La tâche PairProg de la storie n° : ' + storyId + ' contient une malformation1');
+								alert('La tâche de la storie : https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + ' contient une malformation');
 							}else{
+								console.log('PP1',owners, tabDuree)
 								for(var i in owners){
 									if(!ressource.find(x => x.initials == owners[i])){
 										ressource.push({initials : owners[i], value : parseInt(tabDuree[i])});
@@ -143,21 +150,25 @@ function getTasksInfos(projectId,storyId){
 						if (this.description.trim().match(regexPP)) {
 							var taskMemeber = regexPP.exec(this.description.trim())[0];
 							var owner_initial = taskMemeber;
+							console.log('N1')
 							if(!ressource.find(x => x.initials == taskMemeber)){
+								
 								ressource.push({initials : taskMemeber, value : parseInt(duree)});
 							}else{
 								ressource[ressource.findIndex(x => x.initials == taskMemeber)].value += parseInt(duree);
 							}							
 							this.description = this.description.trim().replace(regexPP, "");
 						} else if (memberInitial || taskMemeber) {
-							var owner_initial = (memberInitial ? memberInitial : taskMemeber);		
+							var owner_initial = (memberInitial ? memberInitial : taskMemeber);
+							console.log('N2')
+							
 							if(!ressource.find(x => x.initials == owner_initial)){
 								ressource.push({initials : owner_initial, value : parseInt(duree)});
 							}else{
 								ressource[ressource.findIndex(x => x.initials == owner_initial)].value += parseInt(duree);
 							}	
 						} else {
-							alert('La tâche de la storie n° : ' + storyId + ' contient une malformation2');
+							alert('La tâche de la storie : https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + ' contient une malformation');
 						}
 						//TacheSimple avec temps et intital
 					} else if (this.description.trim().match(/([A-Z]+)+$/)) {
@@ -170,7 +181,7 @@ function getTasksInfos(projectId,storyId){
 						} else if (memberInitial || taskMemeber) {
 							owner_initial = (memberInitial ? memberInitial : taskMemeber);
 						} else {
-							alert('La tâche de la storie n° : ' + storyId + ' contient une malformation3');
+							alert('La tâche de la storie : https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + ' contient une malformation');
 						}
 						this.description = this.description.trim().replace(regexPP, "");
 						
@@ -178,25 +189,25 @@ function getTasksInfos(projectId,storyId){
 						if (regexPP.exec(this.description.trim())) {				
 							var duree = regexPP.exec(this.description.trim())[0];
 							this.description = this.description.trim().replace(regexPP, "");
+							console.log('N3',owner_initial, duree )
+							
 							if(!ressource.find(x => x.initials == owner_initial)){
 								ressource.push({initials : owner_initial, value : parseInt(duree)});
 							}else{
 								ressource[ressource.findIndex(x => x.initials == owner_initial)].value += parseInt(duree);
 							}							
 						} else {
-							alert('La tâche de la storie n° : ' + storyId + ' contient une malformation4');
+							alert('La tâche de la storie : https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + ' contient une malformation4');
 						}
 						
 					} else {
-						alert('La tâche de la storie n° : ' + storyId + ' contient une malformation5');
+						alert('La tâche de la storie : https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + ' contient une malformation5');
 						
 					}
 					// }
 				}				
 			} else {
-				this.description = this.description.trim();
-				this.isPairProg = false;
-				this.duree = null;
+				alert('La tâche de la storie n° : ' + storyId + ' contient une malformation5');
 			}
 		}
 	});
@@ -225,13 +236,15 @@ function calculateTasks(stories, projectId){
 	};
 	for(var i in stories.des){
 //		result.amo = manageResult(result.amo,getTasksInfos(projectId, stories.amo[i].id)); 
-		result.amo = manageResult(result.amo,getTasksInfos(projectId, stories.amo[i].id)); 
-	}
-	for(var j in stories.des){
-		result.des = manageResult(result.des,getTasksInfos(projectId, stories.des[j].id))
-	}
-	for(var k in stories.dev){
+result.amo = manageResult(result.amo,getTasksInfos(projectId, stories.amo[i].id)); 
+}
+for(var j in stories.des){
+	result.des = manageResult(result.des,getTasksInfos(projectId, stories.des[j].id))
+}
+for(var k in stories.dev){
+	console.log(stories.dev[k])
 		result.dev = manageResult(result.dev,getTasksInfos(projectId, stories.dev[k].id))
 	}
+	console.log(result);
 	Backbone.trigger('returnProcess', result);
 }
