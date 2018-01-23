@@ -234,7 +234,7 @@ function calculateTasks(stories, projectId){
 		des:[],
 		dev:[]
 	};
-	for(var i in stories.des){
+	for(var i in stories.amo){
 //		result.amo = manageResult(result.amo,getTasksInfos(projectId, stories.amo[i].id)); 
 result.amo = manageResult(result.amo,getTasksInfos(projectId, stories.amo[i].id)); 
 }
