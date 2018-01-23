@@ -20,9 +20,18 @@ namespace Devis.Models.BO
 
         public void updateValue()
         {
-            amo.ForEach(x => x.updateValue(true));
-            dev.ForEach(x => x.updateValue(false));
-            des.ForEach(x => x.updateValue(false));
+            if(amo != null)
+            {
+                amo.ForEach(x => x.updateValue(true));
+            }
+            if (dev != null)
+            {
+                dev.ForEach(x => x.updateValue(false));
+            }
+            if (des != null)
+            {
+                des.ForEach(x => x.updateValue(false));
+            }
         }
 
     }

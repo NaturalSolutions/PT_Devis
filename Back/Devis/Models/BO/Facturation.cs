@@ -30,9 +30,9 @@ namespace Devis.Models.BO
                     Tarification tar = cont.Tarification.Where(x => typeId.Contains(x.ID) && x.IsAmo == isAmo).FirstOrDefault();
                     if(tar != null)
                     {
-                        //this.name = res.Name;
                         this.initials = res.Initial;
-                        this.value = this.value * (res.Niveau == 3 ? tar.Tar3 : tar.Tar5);
+                        decimal dailyValue = this.value != null ? Math.Round(Convert.ToDecimal(this.value / 7),2) : 0;
+                        this.value = Math.Round(dailyValue * (res.Niveau == 3 ? (decimal)tar.Tar3 : (decimal)tar.Tar5),2);
                     }
                 }
             }
@@ -47,7 +47,64 @@ namespace Devis.Models.BO
                 {
                     List<long> typeId = res.Tarification_Ressource.Select(x => x.FK_Tarification).ToList();
                     Tarification tar = cont.Tarification.Where(x => typeId.Contains(x.ID) && x.IsAmo == isAmo).FirstOrDefault();
-                    this.value = this.value * (res.Niveau == 3 ? tar.Tar3 : tar.Tar5);
+                    decimal dailyValue = this.value != null ? Math.Round(Convert.ToDecimal(this.value / 7),2) : 0;
+                    dailyValue += getDecimalPart(dailyValue);
+
+                    this.value = Math.Round(dailyValue * (res.Niveau == 3 ? (decimal)tar.Tar3 : (decimal)tar.Tar5), 2);
+                }
+            }
+        }
+
+        private decimal getDecimalPart(decimal value)
+        {
+            string strValue = value.ToString();
+            string[] tabValues;
+            if(strValue.IndexOf('.') != -1)
+            {
+                tabValues = strValue.Split('.');
+            }
+            else if(strValue.IndexOf(',') != -1)
+            {
+                tabValues = strValue.Split(',');
+            }
+            else
+            {
+                return value;
+            }
+            if(tabValues.Length > 1)
+            {
+                tabValues[1] = setHalfDays(Convert.ToInt32(tabValues[1]));
+                return Convert.ToDecimal(String.Join(".", tabValues));
+            }
+            else
+            {
+                return Convert.ToDecimal(tabValues[0]);
+            }
+
+        }
+
+        private string setHalfDays(int value)
+        {
+            if(value.ToString().Length < 2)
+            {
+                if(value == 0 || value < 5)
+                {
+                    return "00";
+                }
+                else
+                {
+                    return "50";
+                }
+            }
+            else
+            {
+                if (value == 0 || value < 50)
+                {
+                    return "00";
+                }
+                else
+                {
+                    return "50";
                 }
             }
         }
