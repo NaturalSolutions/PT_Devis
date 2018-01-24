@@ -48,7 +48,7 @@ namespace Devis.Models.BO
                     List<long> typeId = res.Tarification_Ressource.Select(x => x.FK_Tarification).ToList();
                     Tarification tar = cont.Tarification.Where(x => typeId.Contains(x.ID) && x.IsAmo == isAmo).FirstOrDefault();
                     decimal dailyValue = this.value != null ? Math.Round(Convert.ToDecimal(this.value / 7),2) : 0;
-                    dailyValue += getDecimalPart(dailyValue);
+                    dailyValue = getDecimalPart(dailyValue);
 
                     this.value = Math.Round(dailyValue * (res.Niveau == 3 ? (decimal)tar.Tar3 : (decimal)tar.Tar5), 2);
                 }
@@ -74,7 +74,14 @@ namespace Devis.Models.BO
             if(tabValues.Length > 1)
             {
                 tabValues[1] = setHalfDays(Convert.ToInt32(tabValues[1]));
-                return Convert.ToDecimal(String.Join(".", tabValues));
+                if(tabValues[1] != "1")
+                {
+                    return Convert.ToDecimal(String.Join(",", tabValues));
+                }
+                else
+                {
+                    return Convert.ToDecimal(tabValues[0]) + 1;
+                }
             }
             else
             {
@@ -87,24 +94,32 @@ namespace Devis.Models.BO
         {
             if(value.ToString().Length < 2)
             {
-                if(value == 0 || value < 5)
+                if(value == 0)
                 {
                     return "00";
                 }
-                else
+                else if (value <= 5)
                 {
                     return "50";
+                }
+                else
+                {
+                    return "1";
                 }
             }
             else
             {
-                if (value == 0 || value < 50)
+                if (value == 0)
                 {
                     return "00";
                 }
-                else
+                else if (value <= 50)
                 {
                     return "50";
+                }
+                else
+                {
+                    return "1";
                 }
             }
         }
