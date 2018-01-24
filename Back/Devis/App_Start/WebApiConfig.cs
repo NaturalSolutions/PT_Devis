@@ -21,6 +21,12 @@ namespace Devis
             );
 
             config.Routes.MapHttpRoute(
+                name: "WordFileApi",
+               routeTemplate: "api/WordFile/{action}",
+               defaults: new { controller = "WordFile" }
+            );
+
+            config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",
                 defaults: new { id = RouteParameter.Optional }
