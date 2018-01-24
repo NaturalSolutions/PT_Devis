@@ -110,3 +110,12 @@ C:\Users\Tom\Projets\DevisValable\Back\Devis\bin\Devis.pdb
 C:\Users\Tom\Projets\DevisValable\Back\Devis\obj\Debug\Devis.csprojResolveAssemblyReference.cache
 C:\Users\Tom\Projets\DevisValable\Back\Devis\obj\Debug\Devis.dll
 C:\Users\Tom\Projets\DevisValable\Back\Devis\obj\Debug\Devis.pdb
+C:\inetpub\wwwroot\devis\Back\Devis\bin\ApplicationInsights.config
+C:\inetpub\wwwroot\devis\Back\Devis\bin\Devis.dll.config
+C:\inetpub\wwwroot\devis\Back\Devis\bin\Devis.dll
+C:\inetpub\wwwroot\devis\Back\Devis\bin\Devis.pdb
+C:\inetpub\wwwroot\devis\Back\Devis\obj\Debug\Devis.csprojResolveAssemblyReference.cache
+C:\inetpub\wwwroot\devis\Back\Devis\obj\Debug\Devis.csproj.CoreCompileInputs.cache
+C:\inetpub\wwwroot\devis\Back\Devis\obj\Debug\Devis.dll
+C:\inetpub\wwwroot\devis\Back\Devis\obj\Debug\Devis.pdb
+C:\inetpub\wwwroot\devis\Back\Devis\bin\Xceed.Words.NET.dll
