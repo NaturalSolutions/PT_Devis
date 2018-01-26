@@ -20,7 +20,13 @@ function getAllProjects() {
 				if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
 				return 0;
 			});
-			myProjects = data;
+			var toAdd = [];
+			for(var i in data){
+				if(data[i].description == 'reneco'){
+					toAdd.push(data[i]);
+				}
+			}
+			myProjects = toAdd;
 		},
 		error: function () {
 			alert("Cannot get data");
