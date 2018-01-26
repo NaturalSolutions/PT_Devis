@@ -119,3 +119,4 @@ C:\inetpub\wwwroot\devis\Back\Devis\obj\Debug\Devis.csproj.CoreCompileInputs.cac
 C:\inetpub\wwwroot\devis\Back\Devis\obj\Debug\Devis.dll
 C:\inetpub\wwwroot\devis\Back\Devis\obj\Debug\Devis.pdb
 C:\inetpub\wwwroot\devis\Back\Devis\bin\Xceed.Words.NET.dll
+C:\Users\Tom\Projets\DevisValable\Back\Devis\bin\Xceed.Words.NET.dll

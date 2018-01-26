@@ -198,6 +198,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\BO\DevisElements.cs" />
+    <Compile Include="Models\BO\SendedStruct.cs" />
     <Compile Include="Models\BO\WordFile.cs" />
     <Compile Include="Models\BO\FacturationTotale.cs" />
     <Compile Include="Models\BO\Facturation.cs" />
