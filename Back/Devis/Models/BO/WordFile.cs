@@ -81,11 +81,20 @@ namespace Devis.Models.BO
                 Row toAdd = tab.InsertRow(tab.RowCount - 2);
                 //project
                 toAdd.Cells[0].InsertParagraph(insert.projet);
+                List bulletedList = null;                               
                 //stories
-                foreach(string story in insert.stories)
+                foreach (string story in insert.stories)
                 {
-                    toAdd.Cells[1].InsertParagraph(story);
+                    if (bulletedList == null)
+                    {
+                        bulletedList = this.final.AddList(story, 0, ListItemType.Bulleted, 1);
+                    }
+                    else
+                    {
+                        this.final.AddListItem(bulletedList, story);
+                    }
                 }
+                toAdd.Cells[1].InsertList(bulletedList);
                 //Cout
                 toAdd.Cells[2].InsertParagraph(insert.total.ToString() + "€");
                 this.tableSubTotal += insert.total;
