@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 
 namespace Devis.Controllers
 {
-    public class WordFileController : ApiController
+      public class WordFileController : ApiController
     {
         public object Get()
         {
@@ -29,9 +29,10 @@ namespace Devis.Controllers
         //}
 
         [ActionName("create")]
-        public void GetCreate(object docInfos)
+        public string PostCreate(List<sended> docInfos)
         {
-            WordFile test = new WordFile();
+            WordFile test = new WordFile(docInfos);
+            return test.fileName;
         }
     }
 }

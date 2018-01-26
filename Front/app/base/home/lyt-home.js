@@ -1,5 +1,5 @@
-define(['marionette', 'PT_DataAccess', 'i18n'],
-	function (Marionette) {
+define(['marionette', 'config', 'PT_DataAccess', 'i18n'],
+	function (Marionette, config) {
 		'use strict';
 
 		return Marionette.LayoutView.extend({
@@ -8,13 +8,15 @@ define(['marionette', 'PT_DataAccess', 'i18n'],
 			events: {
 				'change #projects': 'loadEpics',
 				'change #epics': 'loadStories',
-				'click #process': 'process'
+				'click #process': 'process',
+				'click #launchFile': 'createFile'
 			},
 			sortedStories: {
 				amo: [],
 				des: [],
 				dev: []
 			},
+			sum:[],
 			initialize: function (options) {
 				this.allProjects = getAllProjects();
 				Backbone.on('returnProcess', this.onReturnProcess, this);
@@ -31,6 +33,7 @@ define(['marionette', 'PT_DataAccess', 'i18n'],
 
 			loadEpics: function (e) {
 				this.projectId = $(e.currentTarget).find("option:selected").val();
+				this.projectName = $(e.currentTarget).find("option:selected").text();
 				this.epics = getEpics(this.projectId);
 				var selectEpic = $("#epics");
 				selectEpic.html('').append($('<option>', {
@@ -47,6 +50,7 @@ define(['marionette', 'PT_DataAccess', 'i18n'],
 
 			loadStories: function (e) {
 				var _this = this;
+				this.stories = null;
 				this.stories = getEpicStories(this.projectId, $(e.currentTarget).find("option:selected").val().toLowerCase());
 				var storiesContainer = $('#stories');
 				var amoCont = storiesContainer.find('#amo');
@@ -55,7 +59,13 @@ define(['marionette', 'PT_DataAccess', 'i18n'],
 				desCont.html('');
 				var devCont = storiesContainer.find('#dev');
 				devCont.html('');
+				this.sortedStories = {
+					amo: [],
+					des: [],
+					dev: []
+				};
 				$.each(this.stories, function () {
+					console.log('this', this)
 					var labels = this.labels.map(o => o.name);
 					for (var i in labels) {
 						if (labels[i] == 'amo') {
@@ -89,6 +99,14 @@ define(['marionette', 'PT_DataAccess', 'i18n'],
 					_this.factuTotal = data;
 					_this.drawFactu(data);
 					_this.drawRessource(data);
+					_this.factu = JSON.parse(data);
+					console.log('_this.sum.find(o => o.projet == _this.projectName)',this.sum)
+					if(_this.sum.find(o => o.projet == _this.projectName)){
+						alert('trouvé');
+
+					}else{
+						_this.manageProject();
+					}
 				});
 			},
 
@@ -129,8 +147,9 @@ define(['marionette', 'PT_DataAccess', 'i18n'],
 					tempResstab =  tempResstab.concat(res[i]);
 				}
 				var mergedDatas = [];
+				console.log('tempResstab', tempResstab);
 				for(var i in tempResstab){
-					if(tempResstab[i] != NaN){
+					if(tempResstab[i] != NaN && tempResstab[i] != null){
 						if(!mergedDatas.find(o => o.initials == tempResstab[i].initials)){
 							mergedDatas.push({initials : tempResstab[i].initials, value : parseInt(tempResstab[i].value)});
 						}else{
@@ -145,6 +164,46 @@ define(['marionette', 'PT_DataAccess', 'i18n'],
 				for (var i in mergedDatas) {	
 					ul.append('<li>' + mergedDatas[i].initials + ': ' + mergedDatas[i].value + '</li>');
 				}
+			},
+
+			manageProject: function(infos){
+				var obj = {};
+				obj["projet"] = this.projectName;
+				obj["stories"] = this.stories.map(o => o.name);
+				obj["total"] = 0;
+				for (var i in this.factu) {
+					if (i == "amo") {
+						for (var j in this.factu[i]) {
+							obj["total"] += this.factu[i][j].value;
+						}
+					}
+					if (i == "des") {
+						for (var j in this.factu[i]) {
+							obj["total"] += this.factu[i][j].value;
+						}
+					}
+					if (i == "dev") {
+						for (var j in this.factu[i]) {
+							obj["total"] += this.factu[i][j].value;
+						}
+					}
+				}
+				this.sum.push(obj);
+				console.log('this.sum', this.sum)
+			},
+
+			createFile: function(){
+				var _this = this;
+				console.log('azedfvpkoljaôezdfjvôiaejfià$vjna$àerfb',_this.sum)
+				$.ajax({
+					contentType: 'application/json; charset=utf-8',
+					type: 'POST',
+					url: 'http://localhost/DevisApi/api/WordFile/create',
+					dataType: 'json',
+					data: JSON.stringify(_this.sum)
+				}).done(function (data) {
+					$("#linkContainer").append('<a href="file:///' + config.serverPath + data + '">Le fichier</a>')
+				})
 			}
 		});
 	});

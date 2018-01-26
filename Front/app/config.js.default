@@ -1,4 +1,6 @@
 define({
     root: window.location.pathname.replace(/\/(?:index.html)?$/, ''),
-    servUrl: 'http://localhost/Devi/api'
+    servUrl: 'http://localhost/Devi/api',
+    serverPath:'c:\\users\\tom\\projets\\devisvalable\\back\\devis\\content\\'
+
 });
