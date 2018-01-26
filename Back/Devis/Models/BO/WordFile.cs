@@ -39,7 +39,7 @@ namespace Devis.Models.BO
             DateTime longDate = DateTime.Now;            
             this.basePath = System.AppDomain.CurrentDomain.BaseDirectory;
             this.tableSubTotal = 0;
-            this.fileName = "Devis_" + longDate.ToString().Trim().Replace('/', '-').Replace(':', '_').Replace(@" ", "") + ".docx";
+            this.fileName = "Devis_All_NS_Reneco_" + longDate.Year.ToString() + "_" + longDate.AddMonths(1).Month+ ".docx";
             this.final = loadTemplate();
             setValue("dateCreation", longDate.ToShortDateString());
             manageDevisTable(obj);
@@ -76,8 +76,6 @@ namespace Devis.Models.BO
         {
             Table tab = this.final.Tables[2];
             //Row templateToCopy = tab.Rows[1];
-            //TODO faire la vraie
-            List<object> listToCreate = new List<object>() { new object(), new object(), new object(), new object()};
             foreach(sended insert in obj)
             {
                 Row toAdd = tab.InsertRow(tab.RowCount - 2);
