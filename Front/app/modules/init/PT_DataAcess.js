@@ -21,8 +21,8 @@ function getAllProjects() {
 				return 0;
 			});
 			var toAdd = [];
-			for(var i in data){
-				if(data[i].description == 'reneco'){
+			for (var i in data) {
+				if (data[i].description == 'reneco') {
 					toAdd.push(data[i]);
 				}
 			}
@@ -66,7 +66,7 @@ function getEpics(projectId) {
 function getEpicStories(projectId, epicLabel) {
 	var stories;
 	$.ajax({
-		url: "https://www.pivotaltracker.com/services/v5/projects/" + projectId + "/stories?with_label=" + epicLabel.toLowerCase()	,
+		url: "https://www.pivotaltracker.com/services/v5/projects/" + projectId + "/stories?with_label=" + epicLabel.toLowerCase(),
 		beforeSend: function (xhr) {
 			xhr.setRequestHeader('X-TrackerToken', 'b4a752782f711a7c564221c2b0c2d5dc');
 		},
@@ -85,7 +85,7 @@ function getEpicStories(projectId, epicLabel) {
 	return stories;
 }
 
-function getTasksInfos(projectId,storyId){
+function getTasksInfos(projectId, storyId) {
 	var mytasks = [];
 	$.ajax({
 		url: "https://www.pivotaltracker.com/services/v5/projects/" + projectId + "/stories/" + storyId + "/tasks",
@@ -128,14 +128,14 @@ function getTasksInfos(projectId,storyId){
 							this.description = this.description.trim().replace(regexPP, "");
 							var tabDuree = tabDureeBrut[0].split('+');
 
-							if(tabDuree.length != owners.length){
+							if (tabDuree.length != owners.length) {
 								alert('La tâche de la storie : https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + ' contient une malformation');
-							}else{
-								console.log('PP1',owners, tabDuree)
-								for(var i in owners){
-									if(!ressource.find(x => x.initials == owners[i])){
-										ressource.push({initials : owners[i], value : parseInt(tabDuree[i])});
-									}else{
+							} else {
+								console.log('PP1', owners, tabDuree)
+								for (var i in owners) {
+									if (!ressource.find(x => x.initials == owners[i])) {
+										ressource.push({ initials: owners[i], value: parseInt(tabDuree[i]) });
+									} else {
 										ressource[ressource.findIndex(x => x.initials == owners[i])].value += parseInt(tabDuree[i]);
 									}
 								}
@@ -157,22 +157,22 @@ function getTasksInfos(projectId,storyId){
 							var taskMemeber = regexPP.exec(this.description.trim())[0];
 							var owner_initial = taskMemeber;
 							console.log('N1')
-							if(!ressource.find(x => x.initials == taskMemeber)){
-								
-								ressource.push({initials : taskMemeber, value : parseInt(duree)});
-							}else{
+							if (!ressource.find(x => x.initials == taskMemeber)) {
+
+								ressource.push({ initials: taskMemeber, value: parseInt(duree) });
+							} else {
 								ressource[ressource.findIndex(x => x.initials == taskMemeber)].value += parseInt(duree);
-							}							
+							}
 							this.description = this.description.trim().replace(regexPP, "");
 						} else if (memberInitial || taskMemeber) {
 							var owner_initial = (memberInitial ? memberInitial : taskMemeber);
 							console.log('N2')
-							
-							if(!ressource.find(x => x.initials == owner_initial)){
-								ressource.push({initials : owner_initial, value : parseInt(duree)});
-							}else{
+
+							if (!ressource.find(x => x.initials == owner_initial)) {
+								ressource.push({ initials: owner_initial, value: parseInt(duree) });
+							} else {
 								ressource[ressource.findIndex(x => x.initials == owner_initial)].value += parseInt(duree);
-							}	
+							}
 						} else {
 							alert('La tâche de la storie : https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + ' contient une malformation');
 						}
@@ -190,28 +190,28 @@ function getTasksInfos(projectId,storyId){
 							alert('La tâche de la storie : https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + ' contient une malformation');
 						}
 						this.description = this.description.trim().replace(regexPP, "");
-						
+
 						regexPP = /(\d)+$/;
-						if (regexPP.exec(this.description.trim())) {				
+						if (regexPP.exec(this.description.trim())) {
 							var duree = regexPP.exec(this.description.trim())[0];
 							this.description = this.description.trim().replace(regexPP, "");
-							console.log('N3',owner_initial, duree )
-							
-							if(!ressource.find(x => x.initials == owner_initial)){
-								ressource.push({initials : owner_initial, value : parseInt(duree)});
-							}else{
+							console.log('N3', owner_initial, duree)
+
+							if (!ressource.find(x => x.initials == owner_initial)) {
+								ressource.push({ initials: owner_initial, value: parseInt(duree) });
+							} else {
 								ressource[ressource.findIndex(x => x.initials == owner_initial)].value += parseInt(duree);
-							}							
+							}
 						} else {
 							alert('La tâche de la storie : https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + ' contient une malformation4');
 						}
-						
+
 					} else {
 						alert('La tâche de la storie : https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + ' contient une malformation5');
-						
+
 					}
 					// }
-				}				
+				}
 			} else {
 				alert('La tâche de la storie n° : ' + storyId + ' contient une malformation5');
 			}
@@ -220,36 +220,36 @@ function getTasksInfos(projectId,storyId){
 	return ressource;
 }
 
-function manageResult(result, newInfos){
-	for(var i in newInfos){
-		if(newInfos[i]){
-		if(result.find(x => x.initials == newInfos[i].initials)){
-			result[result.findIndex(x => x.initials == newInfos[i].initials)].value += parseInt(newInfos[i].value);
-		}else{
-			result.push(newInfos[i]);
+function manageResult(result, newInfos) {
+	for (var i in newInfos) {
+		if (newInfos[i]) {
+			if (result.find(x => x.initials == newInfos[i].initials)) {
+				result[result.findIndex(x => x.initials == newInfos[i].initials)].value += parseInt(newInfos[i].value);
+			} else {
+				result.push(newInfos[i]);
+			}
 		}
-	}
 	}
 	return result;
 }
 
-function calculateTasks(stories, projectId){
+function calculateTasks(stories, projectId) {
 	//amo part
 	var result = {
-		amo:[],
-		des:[],
-		dev:[]
+		amo: [],
+		des: [],
+		dev: []
 	};
-	for(var i in stories.amo){
-//		result.amo = manageResult(result.amo,getTasksInfos(projectId, stories.amo[i].id)); 
-result.amo = manageResult(result.amo,getTasksInfos(projectId, stories.amo[i].id)); 
-}
-for(var j in stories.des){
-	result.des = manageResult(result.des,getTasksInfos(projectId, stories.des[j].id))
-}
-for(var k in stories.dev){
-	console.log(stories.dev[k])
-		result.dev = manageResult(result.dev,getTasksInfos(projectId, stories.dev[k].id))
+	for (var i in stories.amo) {
+		//		result.amo = manageResult(result.amo,getTasksInfos(projectId, stories.amo[i].id)); 
+		result.amo = manageResult(result.amo, getTasksInfos(projectId, stories.amo[i].id));
+	}
+	for (var j in stories.des) {
+		result.des = manageResult(result.des, getTasksInfos(projectId, stories.des[j].id))
+	}
+	for (var k in stories.dev) {
+		console.log(stories.dev[k])
+		result.dev = manageResult(result.dev, getTasksInfos(projectId, stories.dev[k].id))
 	}
 	console.log(result);
 	Backbone.trigger('returnProcess', result);

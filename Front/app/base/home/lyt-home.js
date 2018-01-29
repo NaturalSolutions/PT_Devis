@@ -8,7 +8,8 @@ define(['marionette', 'config', 'PT_DataAccess', 'i18n'],
 			events: {
 				'change #projects': 'loadEpics',
 				'change #epics': 'loadStories',
-				'click #process': 'process',
+				'click #processDevis': 'processDevis',
+				'click #processDevis': 'processFactu',
 				'click #launchFile': 'createFile'
 			},
 			sortedStories: {
@@ -16,7 +17,7 @@ define(['marionette', 'config', 'PT_DataAccess', 'i18n'],
 				des: [],
 				dev: []
 			},
-			sum:[],
+			sum: [],
 			initialize: function (options) {
 				this.allProjects = getAllProjects();
 				Backbone.on('returnProcess', this.onReturnProcess, this);
@@ -83,9 +84,11 @@ define(['marionette', 'config', 'PT_DataAccess', 'i18n'],
 				})
 			},
 
-			process: function () {
+			processDevis: function () {
 				var ressource = calculateTasks(this.sortedStories, this.projectId);
-
+			},
+			processFactu: function () {
+				var ressource = calculateTasks(this.sortedStories, this.projectId);
 			},
 
 			onReturnProcess: function (res) {
@@ -100,11 +103,11 @@ define(['marionette', 'config', 'PT_DataAccess', 'i18n'],
 					_this.drawFactu(data);
 					_this.drawRessource(data);
 					_this.factu = JSON.parse(data);
-					console.log('_this.sum.find(o => o.projet == _this.projectName)',this.sum)
-					if(_this.sum.find(o => o.projet == _this.projectName)){
+					console.log('_this.sum.find(o => o.projet == _this.projectName)', this.sum)
+					if (_this.sum.find(o => o.projet == _this.projectName)) {
 						alert('trouvé');
 
-					}else{
+					} else {
 						_this.manageProject();
 					}
 				});
@@ -140,33 +143,33 @@ define(['marionette', 'config', 'PT_DataAccess', 'i18n'],
 
 			drawRessource: function (res) {
 				res = JSON.parse(res);
-				var ressourceContainer = $('#factu').find('#ressource');				
-				ressourceContainer.html('').append('<span>Ressource prix totale</span>');			
+				var ressourceContainer = $('#factu').find('#ressource');
+				ressourceContainer.html('').append('<span>Ressource prix totale</span>');
 				var tempResstab = [];
-				for(var i in res){
-					tempResstab =  tempResstab.concat(res[i]);
+				for (var i in res) {
+					tempResstab = tempResstab.concat(res[i]);
 				}
 				var mergedDatas = [];
 				console.log('tempResstab', tempResstab);
-				for(var i in tempResstab){
-					if(tempResstab[i] != NaN && tempResstab[i] != null){
-						if(!mergedDatas.find(o => o.initials == tempResstab[i].initials)){
-							mergedDatas.push({initials : tempResstab[i].initials, value : parseInt(tempResstab[i].value)});
-						}else{
+				for (var i in tempResstab) {
+					if (tempResstab[i] != NaN && tempResstab[i] != null) {
+						if (!mergedDatas.find(o => o.initials == tempResstab[i].initials)) {
+							mergedDatas.push({ initials: tempResstab[i].initials, value: parseInt(tempResstab[i].value) });
+						} else {
 							mergedDatas[mergedDatas.findIndex(x => x.initials == tempResstab[i].initials)].value += parseInt(tempResstab[i].value);
 						}
 					}
 				}
 				ressourceContainer.append($('<ul>', {
 					id: 'ulRessources',
-				}));				
+				}));
 				var ul = $('#ulRessources');
-				for (var i in mergedDatas) {	
+				for (var i in mergedDatas) {
 					ul.append('<li>' + mergedDatas[i].initials + ': ' + mergedDatas[i].value + '</li>');
 				}
 			},
 
-			manageProject: function(infos){
+			manageProject: function (infos) {
 				var obj = {};
 				obj["projet"] = this.projectName;
 				obj["stories"] = this.stories.map(o => o.name);
@@ -192,9 +195,9 @@ define(['marionette', 'config', 'PT_DataAccess', 'i18n'],
 				console.log('this.sum', this.sum)
 			},
 
-			createFile: function(){
+			createFile: function () {
 				var _this = this;
-				console.log('azedfvpkoljaôezdfjvôiaejfià$vjna$àerfb',_this.sum)
+				console.log('azedfvpkoljaôezdfjvôiaejfià$vjna$àerfb', _this.sum)
 				$.ajax({
 					contentType: 'application/json; charset=utf-8',
 					type: 'POST',
