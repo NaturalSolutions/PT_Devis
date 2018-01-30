@@ -41,6 +41,7 @@ require.config({
 		'growl': '../bower_components/growl/javascripts/jquery.growl',
 		'sweetAlert': '../bower_components/sweetalert/lib/sweet-alert.min',
 		'i18n': './vendors/i18n/i18next',
+		'moment': '../bower_components/moment/min/moment.min',
 
 		/*==========  Bower  ==========*/
 		'PT_DataAccess': 'modules/init/PT_DataAcess',		

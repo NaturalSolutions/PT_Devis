@@ -1,5 +1,5 @@
-define(['marionette', 'config', 'PT_DataAccess', 'i18n'],
-	function (Marionette, config) {
+define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
+	function (Marionette, config, moment) {
 		'use strict';
 
 		return Marionette.LayoutView.extend({
@@ -9,7 +9,7 @@ define(['marionette', 'config', 'PT_DataAccess', 'i18n'],
 				'change #projects': 'loadEpics',
 				'change #epics': 'loadStories',
 				'click #processDevis': 'processDevis',
-				'click #processDevis': 'processFactu',
+				'click #processFactu': 'processFactu',
 				'click #launchFile': 'createFile'
 			},
 			sortedStories: {
@@ -66,7 +66,6 @@ define(['marionette', 'config', 'PT_DataAccess', 'i18n'],
 					dev: []
 				};
 				$.each(this.stories, function () {
-					console.log('this', this)
 					var labels = this.labels.map(o => o.name);
 					for (var i in labels) {
 						if (labels[i] == 'amo') {
@@ -103,10 +102,9 @@ define(['marionette', 'config', 'PT_DataAccess', 'i18n'],
 					_this.drawFactu(data);
 					_this.drawRessource(data);
 					_this.factu = JSON.parse(data);
-					console.log('_this.sum.find(o => o.projet == _this.projectName)', this.sum)
 					if (_this.sum.find(o => o.projet == _this.projectName)) {
+						//TODO proposer au choix de conserver ou d'écraser la précédente entrée
 						alert('trouvé');
-
 					} else {
 						_this.manageProject();
 					}
@@ -150,7 +148,6 @@ define(['marionette', 'config', 'PT_DataAccess', 'i18n'],
 					tempResstab = tempResstab.concat(res[i]);
 				}
 				var mergedDatas = [];
-				console.log('tempResstab', tempResstab);
 				for (var i in tempResstab) {
 					if (tempResstab[i] != NaN && tempResstab[i] != null) {
 						if (!mergedDatas.find(o => o.initials == tempResstab[i].initials)) {
@@ -192,12 +189,10 @@ define(['marionette', 'config', 'PT_DataAccess', 'i18n'],
 					}
 				}
 				this.sum.push(obj);
-				console.log('this.sum', this.sum)
 			},
 
 			createFile: function () {
 				var _this = this;
-				console.log('azedfvpkoljaôezdfjvôiaejfià$vjna$àerfb', _this.sum)
 				$.ajax({
 					contentType: 'application/json; charset=utf-8',
 					type: 'POST',
@@ -207,6 +202,24 @@ define(['marionette', 'config', 'PT_DataAccess', 'i18n'],
 				}).done(function (data) {
 					$("#linkContainer").append('<a href="file:///' + config.serverPath + data + '">Le fichier</a>')
 				})
+			},
+
+			processFactu: function(){
+				var firstDay, lastDay;
+				if($('#month').val()) {
+					//premier jour du mois selectionné	
+					console.log('zguegdeouf',$('#month').val())			
+					firstDay = moment($('#month').val());
+					lastDay = moment($('#month').val());
+					lastDay.add(1,'month').add(-1,'days')
+					// console.log('ijlhblbqsdvpughiazefpuhio', firstDay.format( 'dddd, MMMM D, YYYY h:mm A'))					
+					// console.log('ijlhblbqsdvpughiazefpuhio', lastDay.add(1,'month').add(-1,'days').format( 'dddd, MMMM D, YYYY h:mm A'))
+					// console.log('juxtaposition', firstDay.format( 'dddd, MMMM D, YYYY h:mm A'))
+					// console.log('juxtaposition', lastDay.format( 'dddd, MMMM D, YYYY h:mm A'))
+					//dernier jour du mois selectionné									
+					
+				}
+				getAcceptedStoriesAtDate(720865, firstDay, lastDay)
 			}
 		});
 	});

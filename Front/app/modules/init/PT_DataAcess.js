@@ -85,6 +85,19 @@ function getEpicStories(projectId, epicLabel) {
 	return stories;
 }
 
+function sortFinishedStories(stories){
+	var finishedTab = [];
+	var unfinishedTab = [];
+	for(var i in stories){
+		if(stories[i].current_state == "accepted"){
+			finishedTab.push(stories[i]);
+		}else{
+			unfinishedTab.push(stories[i]);
+		}
+	}
+	return {finished: finishedTab, unfinished: unfinishedTab};
+}
+
 function getTasksInfos(projectId, storyId) {
 	var mytasks = [];
 	$.ajax({
@@ -241,7 +254,6 @@ function calculateTasks(stories, projectId) {
 		dev: []
 	};
 	for (var i in stories.amo) {
-		//		result.amo = manageResult(result.amo,getTasksInfos(projectId, stories.amo[i].id)); 
 		result.amo = manageResult(result.amo, getTasksInfos(projectId, stories.amo[i].id));
 	}
 	for (var j in stories.des) {
@@ -253,4 +265,47 @@ function calculateTasks(stories, projectId) {
 	}
 	console.log(result);
 	Backbone.trigger('returnProcess', result);
+}
+
+function getAcceptedStoriesAtDate(projectId, leftDate, rightDate){
+	//https://www.pivotaltracker.com/services/v5/projects/1621131/stories?with_label=commande 1 - 31 janvier 2018&with_state=accepted	
+	$.ajax({
+		url: "https://www.pivotaltracker.com/services/v5/projects/" + projectId + "/stories?accepted_after="+leftDate.add(-1,"days").toISOString() + "&accepted_before=" + rightDate.add(1, "days").toISOString(),
+		beforeSend: function (xhr) {
+			xhr.setRequestHeader('X-TrackerToken', 'b4a752782f711a7c564221c2b0c2d5dc');
+		},
+		async: false,
+		type: 'GET',
+		dataType: 'json',
+		contentType: 'application/json',
+		processData: false,
+		success: function (data) {
+			stories = manageResult(data);
+			$.each(stories, function () {
+				var labels = this.labels.map(o => o.name);
+				for (var i in labels) {
+					if (labels[i] == 'amo') {
+						_this.sortedStories.amo.push(this);
+						amoCont.append('<li>' + this.name + '</li>');
+					} else if (labels[i] == 'des') {
+						_this.sortedStories.des.push(this);
+						desCont.append('<li>' + this.name + '</li>');
+					} else if (labels[i] == 'dev') {
+						_this.sortedStories.dev.push(this);
+						devCont.append('<li>' + this.name + '</li>');
+					}
+
+				}
+			})
+			console.log('stories', stories);
+		},
+		error: function () {
+			alert("Cannot get data");
+		}
+	});
+	return stories;
+}
+
+function calculateFacturation(){
+	
 }
