@@ -201,8 +201,9 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 				obj["total"] = 0;
 				if(isFactu){
 					console.log('ikjhgbpmighboiBLIOUP¨PP', this.stories)
-					obj["stories"] = this.stories.stories;
-					obj["storiesBonus"] = this.stories.bonus;
+					obj["stories"] = this.stories.stories.map(o => o.name);
+					console.log("---------------------------------------------------", this.stories.bonus.map(o => o.name).length);
+					obj["storiesBonus"] = this.stories.bonus.map(o => o.name).length > 0 ? this.stories.bonus.map(o => o.name) : [""];
 					obj["total"] = 0;
 					obj["totalBonus"] = 0;
 					console.log('manage', this.stories, obj)
@@ -266,15 +267,16 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 			},
 
 			createFile: function () {
-				var _this = this;$
+				var _this = this;
 				var complement = this.isFactu ? 'Factu' : 'Devis';
-				console.log('http://localhost/DevisApi/api/WordFile/create' + complement);
+				console.log(_this.sum)
+				console.log('http://localhost/DevisApi/api/WordFile/create' + complement, JSON.stringify(_this.sum));
 				$.ajax({
-					contentType: 'application/json; charset=utf-8',
-					type: 'POST',
+					method: 'POST',
 					url: 'http://localhost/DevisApi/api/WordFile/create' + complement,
 					dataType: 'json',
-					data: {"":_this.sum}
+					//data: {"docInfos":JSON.stringify(_this.sum)}
+					data: {"":_this.sum},
 				}).done(function (data) {
 					$("#linkContainer").append('<a href="file:///' + config.serverPath + data + '">Le fichier</a>')
 				})
