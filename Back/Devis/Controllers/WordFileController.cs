@@ -28,10 +28,17 @@ namespace Devis.Controllers
         //    return new byte[0];
         //}
 
-        [ActionName("create")]
-        public string PostCreate(List<sended> docInfos)
+        [ActionName("createDevis")]
+        public string PostCreateDevis(List<sended> docInfos)
         {
             WordFile test = new WordFile(docInfos);
+            return test.fileName;
+        }
+
+        [ActionName("createFactu")]
+        public string PostCreateFactu(List<sended> docInfos)
+        {
+            WordFile test = new WordFile(docInfos, true);
             return test.fileName;
         }
     }

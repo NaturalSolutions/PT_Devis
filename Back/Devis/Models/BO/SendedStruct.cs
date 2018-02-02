@@ -9,6 +9,8 @@ namespace Devis.Models.BO
     {
         public string projet;
         public List<string> stories;
+        public List<string> storiesBonus;
         public int total;
+        public int? totalBonus;
     }
 }

@@ -18,9 +18,13 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 				dev: []
 			},
 			sum: [],
+			isFactu: false,
 			initialize: function (options) {
 				this.allProjects = getAllProjects();
-				Backbone.on('returnProcess', this.onReturnProcess, this);
+				this.sum = [];
+				Backbone.on('returnProcess', this.onReturnProcess, this);				
+				Backbone.on('returnFactuProcess', this.onReturnFactuProcess, this);
+				
 			},
 
 			onShow: function (options) {
@@ -52,7 +56,8 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 			loadStories: function (e) {
 				var _this = this;
 				this.stories = null;
-				this.stories = getEpicStories(this.projectId, $(e.currentTarget).find("option:selected").val().toLowerCase());
+				this.epicLabel =  $(e.currentTarget).find("option:selected").val().toLowerCase();
+				this.stories = getEpicStories(this.projectId, this.epicLabel);
 				var storiesContainer = $('#stories');
 				var amoCont = storiesContainer.find('#amo');
 				amoCont.html('');
@@ -86,12 +91,13 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 			processDevis: function () {
 				var ressource = calculateTasks(this.sortedStories, this.projectId);
 			},
-			processFactu: function () {
-				var ressource = calculateTasks(this.sortedStories, this.projectId);
-			},
+			// processFactu: function () {
+				
+			// },
 
 			onReturnProcess: function (res) {
 				var _this = this;
+				console.log('le result', res);
 				$.ajax({
 					type: 'POST',
 					url: 'http://localhost/DevisApi/api/Facturation/postFactu',
@@ -107,6 +113,29 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 						alert('trouvé');
 					} else {
 						_this.manageProject();
+					}
+				});
+			},
+
+			onReturnFactuProcess: function (res) {
+				var _this = this;
+				console.log('le result factu', res);
+				$.ajax({
+					type: 'POST',
+					url: 'http://localhost/DevisApi/api/Facturation/postfactuWBonus',
+					dataType: 'json',
+					data: {"":res}
+				}).done(function (data) {
+					_this.factuTotal = data;
+					_this.drawFactu(data);
+					_this.drawRessource(data);
+					_this.factu = JSON.parse(data);
+
+					if (_this.sum.find(o => o.projet == _this.projectName)) {
+						//TODO proposer au choix de conserver ou d'écraser la précédente entrée
+						alert('trouvé');
+					} else {
+						_this.manageProject(true);
 					}
 				});
 			},
@@ -166,39 +195,86 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 				}
 			},
 
-			manageProject: function (infos) {
+			manageProject: function (isFactu = false) {
 				var obj = {};
 				obj["projet"] = this.projectName;
-				obj["stories"] = this.stories.map(o => o.name);
 				obj["total"] = 0;
-				for (var i in this.factu) {
-					if (i == "amo") {
-						for (var j in this.factu[i]) {
-							obj["total"] += this.factu[i][j].value;
+				if(isFactu){
+					console.log('ikjhgbpmighboiBLIOUP¨PP', this.stories)
+					obj["stories"] = this.stories.stories;
+					obj["storiesBonus"] = this.stories.bonus;
+					obj["total"] = 0;
+					obj["totalBonus"] = 0;
+					console.log('manage', this.stories, obj)
+					for (var i in this.factu[0]) {
+						if (i == "amo") {
+							for (var j in this.factu[0][i]) {
+								obj["total"] += this.factu[0][i][j].value;
+							}
+						}
+						if (i == "des") {
+							for (var j in this.factu[0][i]) {
+								obj["total"] += this.factu[0][i][j].value;
+							}
+						}
+						if (i == "dev") {
+							for (var j in this.factu[0][i]) {
+								obj["total"] += this.factu[0][i][j].value;
+							}
 						}
 					}
-					if (i == "des") {
-						for (var j in this.factu[i]) {
-							obj["total"] += this.factu[i][j].value;
+					for (var i in this.factu[1]) {
+						if (i == "amo") {
+							for (var j in this.factu[1][i]) {
+								obj["totalBonus"] += this.factu[1][i][j].value;
+							}
+						}
+						if (i == "des") {
+							for (var j in this.factu[1][i]) {
+								obj["totalBonus"] += this.factu[1][i][j].value;
+							}
+						}
+						if (i == "dev") {
+							for (var j in this.factu[1][i]) {
+								obj["totalBonus"] += this.factu[1][i][j].value;
+							}
 						}
 					}
-					if (i == "dev") {
-						for (var j in this.factu[i]) {
-							obj["total"] += this.factu[i][j].value;
+				}else{
+					obj["stories"] = this.stories.map(o => o.name);
+					obj["total"] = 0;
+					for (var i in this.factu) {
+						if (i == "amo") {
+							for (var j in this.factu[i]) {
+								obj["total"] += this.factu[i][j].value;
+							}
+						}
+						if (i == "des") {
+							for (var j in this.factu[i]) {
+								obj["total"] += this.factu[i][j].value;
+							}
+						}
+						if (i == "dev") {
+							for (var j in this.factu[i]) {
+								obj["total"] += this.factu[i][j].value;
+							}
 						}
 					}
 				}
+				console.log('glitch', obj)
 				this.sum.push(obj);
 			},
 
 			createFile: function () {
-				var _this = this;
+				var _this = this;$
+				var complement = this.isFactu ? 'Factu' : 'Devis';
+				console.log('http://localhost/DevisApi/api/WordFile/create' + complement);
 				$.ajax({
 					contentType: 'application/json; charset=utf-8',
 					type: 'POST',
-					url: 'http://localhost/DevisApi/api/WordFile/create',
+					url: 'http://localhost/DevisApi/api/WordFile/create' + complement,
 					dataType: 'json',
-					data: JSON.stringify(_this.sum)
+					data: {"":_this.sum}
 				}).done(function (data) {
 					$("#linkContainer").append('<a href="file:///' + config.serverPath + data + '">Le fichier</a>')
 				})
@@ -207,19 +283,33 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 			processFactu: function(){
 				var firstDay, lastDay;
 				if($('#month').val()) {
-					//premier jour du mois selectionné	
 					console.log('zguegdeouf',$('#month').val())			
 					firstDay = moment($('#month').val());
-					lastDay = moment($('#month').val());
-					lastDay.add(1,'month').add(-1,'days')
-					// console.log('ijlhblbqsdvpughiazefpuhio', firstDay.format( 'dddd, MMMM D, YYYY h:mm A'))					
-					// console.log('ijlhblbqsdvpughiazefpuhio', lastDay.add(1,'month').add(-1,'days').format( 'dddd, MMMM D, YYYY h:mm A'))
-					// console.log('juxtaposition', firstDay.format( 'dddd, MMMM D, YYYY h:mm A'))
-					// console.log('juxtaposition', lastDay.format( 'dddd, MMMM D, YYYY h:mm A'))
-					//dernier jour du mois selectionné									
+					lastDay = moment();									
 					
 				}
-				getAcceptedStoriesAtDate(720865, firstDay, lastDay)
+				this.isFactu = true;
+				var tempSortedStories = getAcceptedStoriesAtDate(this.projectId, firstDay, lastDay, this.epicLabel);
+				// this.sortedStories.amo = tempSortedStories.amo;
+				// this.sortedStories.des = tempSortedStories.des;
+				// this.sortedStories.dev = tempSortedStories.dev;
+				this.stories.stories = [];
+				this.stories.bonus = [];
+				console.log('glitch3' , tempSortedStories)	
+				for(var i in tempSortedStories.stories){
+					this.stories.stories = this.stories.stories.concat(tempSortedStories.stories[i]);
+					console.log(tempSortedStories.bonus[i])
+					this.stories.bonus = this.stories.bonus.concat(tempSortedStories.bonus[i]);
+					console.log('this.stories.bonus',this.stories.bonus)
+				}
+				//this.stories.stories = tempSortedStories.stories;
+				console.log('glitch2' , this.stories)	
+				//this.projectId = this.projectId;
+				var res = calculateTasks(tempSortedStories.stories, this.projectId, true);
+				var resbonus = calculateTasks(tempSortedStories.bonus, this.projectId, true);
+				this.onReturnFactuProcess([res, resbonus])
+				console.log('Margoulette 17000', this.sum);
+
 			}
 		});
 	});

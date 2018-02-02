@@ -16,8 +16,10 @@ namespace Devis.Models.BO
 
         DocX final { get; set; }
         decimal tableSubTotal { get; set; }
+        decimal tableSubTotalBonus { get; set; }
         string basePath { get; set; }
         public string fileName { get; set; }
+        public bool isFactu { get; set; }
         //Dictionary<string, object> elements { get; set; } = new Dictionary<string, object>()
         //{
         //    { "dateCreation", DateTime.Now },
@@ -34,12 +36,20 @@ namespace Devis.Models.BO
         //    { "livraisonFinal", new DateTime( DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddDays(-1)}
         //};
 
-        public WordFile(List<sended> obj)
+        public WordFile(List<sended> obj, bool isFactu = false)
        {
-            DateTime longDate = DateTime.Now;            
+            DateTime longDate = DateTime.Now;
+            this.isFactu = isFactu;
             this.basePath = System.AppDomain.CurrentDomain.BaseDirectory;
             this.tableSubTotal = 0;
-            this.fileName = "Devis_All_NS_Reneco_" + longDate.Year.ToString() + "_" + longDate.AddMonths(1).Month+ ".docx";
+            if (isFactu)
+            {
+                this.fileName = "Facturation_All_NS_Reneco_" + longDate.Year.ToString() + "_" + longDate.AddMonths(1).Month + ".docx";
+            }
+            else
+            {
+                this.fileName = "Devis_All_NS_Reneco_" + longDate.Year.ToString() + "_" + longDate.AddMonths(1).Month+ ".docx";
+            }
             this.final = loadTemplate();
             setValue("dateCreation", longDate.ToShortDateString());
             manageDevisTable(obj);
@@ -51,7 +61,15 @@ namespace Devis.Models.BO
 
         private DocX loadTemplate()
         {
-            string fileName = this.basePath + @"\Content\templateDevisPropre.docx";
+            string fileName;
+            if (this.isFactu)
+            {
+                fileName = this.basePath + @"\Content\templateFacturePropre.docx";
+            }
+            else
+            {
+                fileName= this.basePath + @"\Content\templateDevisPropre.docx";
+            }
             DocX temp = DocX.Load(fileName);
             //LoadFile in memory
             return temp;
@@ -101,6 +119,37 @@ namespace Devis.Models.BO
             }
 
             tab.Rows[tab.RowCount - 1].Cells[1].ReplaceText("[totalTable]", this.tableSubTotal.ToString());
+
+            if (this.isFactu)
+            {
+                Table tabBonus = this.final.Tables[2];
+                //Row templateToCopy = tab.Rows[1];
+                foreach (sended insert in obj)
+                {
+                    Row toAdd = tabBonus.InsertRow(tabBonus.RowCount - 2);
+                    //project
+                    toAdd.Cells[0].InsertParagraph(insert.projet);
+                    List bulletedList = null;
+                    //stories
+                    foreach (string story in insert.stories)
+                    {
+                        if (bulletedList == null)
+                        {
+                            bulletedList = this.final.AddList(story, 0, ListItemType.Bulleted, 1);
+                        }
+                        else
+                        {
+                            this.final.AddListItem(bulletedList, story);
+                        }
+                    }
+                    toAdd.Cells[1].InsertList(bulletedList);
+                    //Cout
+                    toAdd.Cells[2].InsertParagraph(insert.total.ToString() + "€");
+                    this.tableSubTotalBonus += insert.total;
+                }
+
+                tabBonus.Rows[tabBonus.RowCount - 1].Cells[1].ReplaceText("[totalTableBonus]", this.tableSubTotalBonus.ToString());
+            }
         }
     }
 }
