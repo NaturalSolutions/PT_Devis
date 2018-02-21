@@ -36,10 +36,24 @@ namespace Devis.Controllers
         }
 
         [ActionName("createFactu")]
-        public string PostCreateFactu(List<sended> docInfos)
-        {
+        public string PostCreateFactu(List<sended>  docInfos)
+        {   
             WordFile test = new WordFile(docInfos, true);
             return test.fileName;
         }
+
+        //[ActionName("createFactu")]
+        //public string PostCreateFactu(string docInfos)
+        //{
+        //    List<string> temp = JsonConvert.DeserializeObject<List<string>>(docInfos);
+        //    List<sended> infos = new List<sended>();
+        //    foreach (string s in temp)
+        //    {
+        //        infos.Add(JsonConvert.DeserializeObject<sended>(s));
+        //    }
+        //    //List<sended> test = Newtonsoft.Json.JsonConvert.DeserializeObject<sended>(docInfos);
+        //    WordFile test = new WordFile(infos, true);
+        //    return test.fileName;
+        //}
     }
 }
