@@ -48,7 +48,8 @@ namespace Devis.Models.BO
             }
             else
             {
-                this.fileName = "Devis_All_NS_Reneco_" + longDate.Year.ToString() + "_" + longDate.AddMonths(1).Month+ ".docx";
+                
+                this.fileName = "Etat_des_lieux_VS_devis_initial_All_NS_Reneco_" + longDate.Year.ToString() + "_" + longDate.AddMonths(1).Month+ ".docx";
             }
             this.final = loadTemplate();
             setValue("dateCreation", longDate.ToShortDateString());
