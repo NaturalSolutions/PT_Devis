@@ -14,6 +14,8 @@ namespace Devis.Models.BO
         //public string typeName { get; set; }
         public decimal? value { get; set; }
 
+        public decimal? valueWE { get; set; }
+
         public Facturation()
         {
 
@@ -48,9 +50,14 @@ namespace Devis.Models.BO
                     List<long> typeId = res.Tarification_Ressource.Select(x => x.FK_Tarification).ToList();
                     Tarification tar = cont.Tarification.Where(x => typeId.Contains(x.ID) && x.IsAmo == isAmo).FirstOrDefault();
                     decimal dailyValue = this.value != null ? Math.Round(Convert.ToDecimal(this.value / 7),2) : 0;
+                    decimal dailyValueWE = this.valueWE != null ? Math.Round(Convert.ToDecimal(this.valueWE / 7), 2) : 0;
                     dailyValue = getDecimalPart(dailyValue);
-
+                    dailyValueWE = getDecimalPart(dailyValueWE);
                     this.value = Math.Round(dailyValue * (res.Niveau == 3 ? (decimal)tar.Tar3 : (decimal)tar.Tar5), 2);
+                    if(this.valueWE != null)
+                    {
+                        this.valueWE = Math.Round(dailyValue * (res.Niveau == 3 ? (decimal)tar.Tar3 : (decimal)tar.Tar5), 2) * 1.5m;
+                    }
                 }
             }
         }

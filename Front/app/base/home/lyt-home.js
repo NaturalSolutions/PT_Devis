@@ -97,7 +97,7 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 
 			onReturnProcess: function (res) {
 				var _this = this;
-				console.log('le result', res);
+				//console.log('le result', res);
 				$.ajax({
 					type: 'POST',
 					url: 'http://localhost/DevisApi/api/Facturation/postFactu',
@@ -113,7 +113,7 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 						alert('trouvé');
 					} else {
 						alert('onreturnprocess')
-						console.log('onreturnprocess', data);
+						//console.log('onreturnprocess', data);
 						_this.manageProject();
 					}
 				});
@@ -121,7 +121,7 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 
 			onReturnFactuProcess: function (res) {
 				var _this = this;
-				console.log('le result factu', res);
+				//console.log('le result factu', res);
 				$.ajax({
 					type: 'POST',
 					url: 'http://localhost/DevisApi/api/Facturation/postfactuWBonus',
@@ -202,13 +202,13 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 				obj["projet"] = this.projectName;
 				obj["total"] = 0;
 				if(isFactu){
-					console.log('ikjhgbpmighboiBLIOUP¨PP', this.stories, isFactu)
+					//console.log('ikjhgbpmighboiBLIOUP¨PP', this.stories, isFactu)
 					obj["stories"] = this.stories.stories.map(o => o.name);
-					console.log("---------------------------------------------------", this.stories.bonus.map(o => o.name).length);
+					//console.log("---------------------------------------------------", this.stories.bonus.map(o => o.name).length);
 					obj["storiesBonus"] = this.stories.bonus.map(o => o.name).length > 0 ? this.stories.bonus.map(o => o.name) : [""];
 					obj["total"] = 0;
 					obj["totalBonus"] = 0;
-					console.log('manage', this.stories, obj)
+					//console.log('manage', this.stories, obj)
 					for (var i in this.factu[0]) {
 						if (i == "amo") {
 							for (var j in this.factu[0][i]) {
@@ -264,15 +264,15 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 						}
 					}
 				}
-				console.log('glitch', obj)
+				//console.log('glitch', obj)
 				this.sum.push(obj);
 			},
 
 			createFile: function () {
 				var _this = this;
 				var complement = this.isFactu ? 'Factu' : 'Devis';
-				console.log(_this.sum)
-				console.log('http://localhost/DevisApi/api/WordFile/create' + complement, JSON.stringify(_this.sum));
+				//console.log(_this.sum)
+				//console.log('http://localhost/DevisApi/api/WordFile/create' + complement, JSON.stringify(_this.sum));
 				$.ajax({
 					method: 'POST',
 					url: 'http://localhost/DevisApi/api/WordFile/create' + complement,
@@ -287,7 +287,7 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 			processFactu: function(){
 				var firstDay, lastDay;
 				if($('#month').val()) {
-					console.log('zguegdeouf',$('#month').val())			
+					//console.log('zguegdeouf',$('#month').val())			
 					firstDay = moment($('#month').val());
 					lastDay = moment();									
 					
@@ -299,20 +299,20 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 				// this.sortedStories.dev = tempSortedStories.dev;
 				this.stories.stories = [];
 				this.stories.bonus = [];
-				console.log('glitch3' , tempSortedStories)	
+				//console.log('glitch3' , tempSortedStories)	
 				for(var i in tempSortedStories.stories){
 					this.stories.stories = this.stories.stories.concat(tempSortedStories.stories[i]);
-					console.log(tempSortedStories.bonus[i])
+					//console.log(tempSortedStories.bonus[i])
 					this.stories.bonus = this.stories.bonus.concat(tempSortedStories.bonus[i]);
-					console.log('this.stories.bonus',this.stories.bonus)
+					//console.log('this.stories.bonus',this.stories.bonus)
 				}
 				//this.stories.stories = tempSortedStories.stories;
-				console.log('glitch2' , this.stories)	
+				//console.log('glitch2' , this.stories)	
 				//this.projectId = this.projectId;
 				var res = calculateTasks(tempSortedStories.stories, this.projectId, true);
 				var resbonus = calculateTasks(tempSortedStories.bonus, this.projectId, true);
 				this.onReturnFactuProcess([res, resbonus])
-				console.log('Margoulette 17000', this.sum);
+				//console.log('Margoulette 17000', this.sum);
 
 			}
 		});
