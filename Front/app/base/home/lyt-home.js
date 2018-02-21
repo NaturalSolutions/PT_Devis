@@ -112,6 +112,8 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 						//TODO proposer au choix de conserver ou d'écraser la précédente entrée
 						alert('trouvé');
 					} else {
+						alert('onreturnprocess')
+						console.log('onreturnprocess', data);
 						_this.manageProject();
 					}
 				});
@@ -200,7 +202,7 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 				obj["projet"] = this.projectName;
 				obj["total"] = 0;
 				if(isFactu){
-					console.log('ikjhgbpmighboiBLIOUP¨PP', this.stories)
+					console.log('ikjhgbpmighboiBLIOUP¨PP', this.stories, isFactu)
 					obj["stories"] = this.stories.stories.map(o => o.name);
 					console.log("---------------------------------------------------", this.stories.bonus.map(o => o.name).length);
 					obj["storiesBonus"] = this.stories.bonus.map(o => o.name).length > 0 ? this.stories.bonus.map(o => o.name) : [""];
