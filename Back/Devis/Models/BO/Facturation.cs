@@ -16,6 +16,10 @@ namespace Devis.Models.BO
 
         public decimal? valueWE { get; set; }
 
+        public decimal? valueF { get; set; }
+
+        public decimal sum { get; set; }
+
         public Facturation()
         {
 
@@ -51,13 +55,28 @@ namespace Devis.Models.BO
                     Tarification tar = cont.Tarification.Where(x => typeId.Contains(x.ID) && x.IsAmo == isAmo).FirstOrDefault();
                     decimal dailyValue = this.value != null ? Math.Round(Convert.ToDecimal(this.value / 7),2) : 0;
                     decimal dailyValueWE = this.valueWE != null ? Math.Round(Convert.ToDecimal(this.valueWE / 7), 2) : 0;
+                    decimal dailyValueF = this.valueF != null ? Math.Round(Convert.ToDecimal(this.valueF / 7), 2) : 0;
                     dailyValue = getDecimalPart(dailyValue);
                     dailyValueWE = getDecimalPart(dailyValueWE);
+                    dailyValueF = getDecimalPart(dailyValueF);
                     this.value = Math.Round(dailyValue * (res.Niveau == 3 ? (decimal)tar.Tar3 : (decimal)tar.Tar5), 2);
                     if(this.valueWE != null)
                     {
-                        this.valueWE = Math.Round(dailyValue * (res.Niveau == 3 ? (decimal)tar.Tar3 : (decimal)tar.Tar5), 2) * 1.5m;
+                        this.valueWE = Math.Round(dailyValueWE * (res.Niveau == 3 ? (decimal)tar.Tar3 : (decimal)tar.Tar5), 2) * 1.5m;
                     }
+                    else
+                    {
+                        this.valueWE = 0;
+                    }
+                    if (this.valueF != null)
+                    {
+                        this.valueF = Math.Round(dailyValueF * (res.Niveau == 3 ? (decimal)tar.Tar3 : (decimal)tar.Tar5), 2) * 2m;
+                    }
+                    else
+                    {
+                        this.valueF = 0;
+                    }
+                    this.sum = Convert.ToDecimal(this.value + this.valueWE + this.valueF);
                 }
             }
         }

@@ -17,6 +17,8 @@ namespace Devis.Models.BO
         [DataMember]
         public int total { get; set; }
         [DataMember]
-        public int totalBonus { get; set; }        
+        public int totalBonus { get; set; }
+        [DataMember]
+        public List<string> unfinished { get; set; }
     }
 }

@@ -125,6 +125,7 @@ namespace Devis.Models.BO
             if (this.isFactu)
             {
                 Table tabBonus = this.final.Tables[3];
+                Table tabUnfinished = this.final.Tables[4];
                 //Row templateToCopy = tab.Rows[1];
                 foreach (sended insert in obj)
                 {
@@ -151,9 +152,31 @@ namespace Devis.Models.BO
                         toAdd.Cells[2].InsertParagraph(insert.totalBonus.ToString() + "€");
                         this.tableSubTotalBonus += insert.totalBonus;
                     }
+
+                    tabBonus.Rows[tabBonus.RowCount - 1].Cells[1].ReplaceText("[totalTableBonus]", this.tableSubTotalBonus.ToString());
+
+                    if (insert.unfinished.Count > 0 && insert.unfinished[0] != null)
+                    {
+                        Row toAdd = tabUnfinished.InsertRow(tabUnfinished.RowCount - 1);
+                        //project
+                        toAdd.Cells[0].InsertParagraph(insert.projet);
+                        List bulletedList = null;
+                        //stories
+                        foreach (string story in insert.unfinished)
+                        {
+                            if (bulletedList == null)
+                            {
+                                bulletedList = this.final.AddList(story, 0, ListItemType.Bulleted, 1);
+                            }
+                            else
+                            {
+                                this.final.AddListItem(bulletedList, story);
+                            }
+                        }
+                        toAdd.Cells[1].InsertList(bulletedList);                        
+                    }
                 }
 
-                tabBonus.Rows[tabBonus.RowCount - 1].Cells[1].ReplaceText("[totalTableBonus]", this.tableSubTotalBonus.ToString());
             }
         }
     }

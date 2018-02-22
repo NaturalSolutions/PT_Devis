@@ -102,9 +102,9 @@ function setError(url, tasksId) {
 	$('#errorLink').append('<a href="' + url + '">' + tasksId + '</a>')
 }
 
-function fillUserTab(tab, initiales, value, isWE){
+function fillUserTab(tab, initiales, value, bonusState){
 	//console.log('les args envoyés a setté dans le tab', arguments)
-	if (!isWE) {
+	if (bonusState == '' || bonusState === undefined || bonusState == null) {
 		if (!tab.find(x => x.initials == initiales)) {
 			tab.push({ initials: initiales, value: parseInt(value) });
 		} else {
@@ -115,7 +115,7 @@ function fillUserTab(tab, initiales, value, isWE){
 				tab[index].value = parseInt(value);
 			}
 		}
-	} else {
+	} else if(bonusState == 'we'){
 		if (!tab.find(x => x.initials == initiales)) {
 			console.log('tout est la first entrance ', JSON.stringify(tab), arguments)
 			tab.push({ initials: initiales, valueWE: parseInt(value) });
@@ -127,6 +127,20 @@ function fillUserTab(tab, initiales, value, isWE){
 				tab[index].valueWE += parseInt(value);
 			} else {
 				tab[index].valueWE = parseInt(value);
+			}
+		}
+	}else if(bonusState == 'f'){
+		if (!tab.find(x => x.initials == initiales)) {
+			console.log('tout est la first entrance ', JSON.stringify(tab), arguments)
+			tab.push({ initials: initiales, valueF: parseInt(value) });
+		} else {
+			var index = tab.findIndex(x => x.initials == initiales);
+			console.log('tout est la ', JSON.stringify(tab), arguments)
+			if (tab[index].valueF) {
+				alert();
+				tab[index].valueF += parseInt(value);
+			} else {
+				tab[index].valueF = parseInt(value);
 			}
 		}
 	}
@@ -143,11 +157,19 @@ function parseAndFillTasks(tasks, storyId, projectId, isFactu) {
 			tabDescrInfo = this.description.split('. -');
 		}
 		var isWE = false;
+		var bonusState = null;
 		if (isFactu) {
-			var regexWE = /[wW]$/
+			var regexWE = /(\@[wW])$/;
 			if (this.description.trim().match(regexWE)) {
 				isWE = true;
+				bonusState = 'we';
 				this.description = this.description.trim().replace(regexWE, "");
+			}else{
+				var regexF = /(\@[fF])$/;
+				if (this.description.trim().match(regexF)) {
+					bonusState = 'f';
+					this.description = this.description.trim().replace(regexF, "");
+				}
 			}
 		}
 		//Si la story ne peut pas etre découpée alors elle n'est pas estimée et ou attribuée
@@ -176,30 +198,7 @@ function parseAndFillTasks(tasks, storyId, projectId, isFactu) {
 							_this.setError('https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + '/tasks/' + this.id, this.id)
 						} else {
 							for (var i in owners) {
-								// if (!isWE) {
-								// 	if (!ressource.find(x => x.initials == owners[i])) {
-								// 		ressource.push({ initials: owners[i], value: parseInt(tabDuree[i]) });
-								// 	} else {
-								// 		var index = ressource.findIndex(x => x.initials == owners[i]);
-								// 		if (ressource[index].value) {
-								// 			ressource[index].value += parseInt(tabDuree[i]);
-								// 		} else {
-								// 			ressource[index].value = parseInt(tabDuree[i]);
-								// 		}
-								// 	}
-								// } else {
-								// 	if (!ressource.find(x => x.initials == owners[i])) {
-								// 		ressource.push({ initials: owners[i], valueWE: parseInt(tabDuree[i]) });
-								// 	} else {
-								// 		var index = ressource.findIndex(x => x.initials == owners[i]);
-								// 		if (ressource[index].valueWE) {
-								// 			ressource[index].valueWE += parseInt(tabDuree[i]);
-								// 		} else {
-								// 			ressource[index].valueWE = parseInt(tabDuree[i]);
-								// 		}
-								// 	}
-								// }
-								ressource = _this.fillUserTab(ressource,owners[i], tabDuree[i], isWE);
+								ressource = _this.fillUserTab(ressource,owners[i], tabDuree[i], bonusState);
 							}
 						}
 						//this.description = this.description.trim().replace(regex, "");
@@ -231,35 +230,14 @@ function parseAndFillTasks(tasks, storyId, projectId, isFactu) {
 						//console.log('la duree', duree)
 						this.description = this.description.trim().replace(regex, "");
 						console.log('Blabla', JSON.stringify(ressource))
-						ressource = _this.fillUserTab(ressource, owner_initial, duree, isWE)
-						// if (!isWE) {
-						// 	if (!ressource.find(x => x.initials == owner_initial)) {
-						// 		ressource.push({ initials: owner_initial, value: parseInt(duree) });
-						// 	} else {
-						// 		var index = ressource.findIndex(x => x.initials == owner_initial);
-						// 		if (ressource[index].value) {
-						// 			ressource[index].value += parseInt(duree);
-						// 		} else {
-						// 			ressource[index].value = parseInt(duree);
-						// 		}
-						// 	}
-						// } else {
-						// 	if (!ressource.find(x => x.initials == owner_initial)) {
-						// 		ressource.push({ initials: owner_initial, valueWE: parseInt(duree) });
-						// 	} else {
-						// 		var index = ressource.findIndex(x => x.initials == owner_initial);
-						// 		if (ressource[index].valueWE) {
-						// 			ressource[index].valueWE += parseInt(duree);
-						// 		} else {
-						// 			ressource[index].valueWE = parseInt(duree);
-						// 		}
-						// 	}
-						// }
+						ressource = _this.fillUserTab(ressource, owner_initial, duree, bonusState)
+
 					} else {
 						alert('Probleme d\'estimation dans la tâche : ' + this.id + ' de la storie n° : ' + storyId + ' n\'est pas estimée.\r\n https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + '/tasks/' + this.id)
 						_this.setError('https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + '/tasks/' + this.id, this.id)
 					}
 				} else {
+					console.log('errInfos', this.description, regex);
 					alert('Probleme d\'initales dans la tâche : ' + this.id + ' de la storie n° : ' + storyId + ' n\'est attribué.\r\n https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + '/tasks/' + this.id)
 					_this.setError('https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + '/tasks/' + this.id, this.id)
 				}
@@ -324,6 +302,13 @@ function manageResult(result, newInfos) {
 						result[index].valueWE += parseInt(newInfos[i].valueWE);
 					}else{
 						result[index].valueWE = parseInt(newInfos[i].valueWE);
+					}					
+				}
+				if(newInfos[i].valueF){
+					if(result[index].valueF){
+						result[index].valueF += parseInt(newInfos[i].valueF);
+					}else{
+						result[index].valueF = parseInt(newInfos[i].valueF);
 					}					
 				}
 			} else {
@@ -398,10 +383,10 @@ function getAcceptedStoriesAtDate(projectId, leftDate, rightDate, epic) {
 			temp_stories = manageResult(data);
 			$.each(temp_stories, function () {
 				var labels = this.labels.map(o => o.name);
-				if (labels.indexOf(epic) != -1) {
-					this.isBonus = false;
-				} else {
+				if (labels.indexOf('bonus') != -1) {
 					this.isBonus = true;
+				} else {
+					this.isBonus = false;
 				}
 				for (var i in labels) {
 					if (labels[i] == 'amo') {
@@ -429,51 +414,40 @@ function getAcceptedStoriesAtDate(projectId, leftDate, rightDate, epic) {
 
 				}
 			})
-			//console.log('stories', { stories: stories, bonus: storiesBonus });
+			console.log('stories', { stories: stories, bonus: storiesBonus });
 		},
 		error: function () {
 			alert("Cannot get data");
 		}
 	});
-	// $.ajax({
-	// 	//url: "https://www.pivotaltracker.com/services/v5/projects/" + projectId + "/stories?accepted_after="+leftDate.add(-1,"days").toISOString() + "&accepted_before=" + rightDate.add(1, "days").toISOString(),
-	// 	url: 'https://www.pivotaltracker.com/services/v5/projects/720865/stories?with_label=commande 1 - 31 janvier 2018&with_state=accepted',
-	// 	beforeSend: function (xhr) {
-	// 		xhr.setRequestHeader('X-TrackerToken', 'b4a752782f711a7c564221c2b0c2d5dc');
-	// 	},
-	// 	async: false,
-	// 	type: 'GET',
-	// 	dataType: 'json',
-	// 	contentType: 'application/json',
-	// 	processData: false,
-	// 	var idList
-	// 	success: function (data) {
-	// 		temp_stories = manageResult(data);
-	// 		$.each(temp_stories, function () {
-	// 			var labels = this.labels.map(o => o.name);
-	// 			for (var i in labels) {
-	// 				if (labels[i] == 'amo') {
-	// 					stories.amo.push(this);
-	// 					amoCont.append('<li>' + this.name + '</li>');
-	// 				} else if (labels[i] == 'des') {
-	// 					stories.des.push(this);
-	// 					desCont.append('<li>' + this.name + '</li>');
-	// 				} else if (labels[i] == 'dev') {
-	// 					stories.dev.push(this);
-	// 					devCont.append('<li>' + this.name + '</li>');
-	// 				}
-
-	// 			}
-	// 		})
-	//// 		console.log('stories', stories);
-	// 	},
-	// 	error: function () {
-	// 		alert("Cannot get data");
-	// 	}
-	// });
+	
 	return { stories: stories, bonus: storiesBonus };
 }
 
-function calculateFacturation() {
 
+function getUnfinishedStories(projectId, epic) {
+	console.log('arguments', arguments)
+	var unfinishedStories = []
+	$.ajax({
+		url: 'https://www.pivotaltracker.com/services/v5/projects/' + projectId + '/stories?with_label=' + epic ,
+		//url: 'https://www.pivotaltracker.com/services/v5/projects/720865/stories?accepted_after=2017-12-31T00:00:00.000Z&accepted_before=' +rightDate.toISOString(),
+		beforeSend: function (xhr) {
+			xhr.setRequestHeader('X-TrackerToken', 'b4a752782f711a7c564221c2b0c2d5dc');
+		},
+		async: false,
+		type: 'GET',
+		dataType: 'json',
+		contentType: 'application/json',
+		processData: false,
+		success: function (data) {
+			console.log('des infos sur les tacjes non finies', data);
+			for(var i in data){
+				if(data[i].current_state != 'accepted' && data[i].story_type != 'release'){
+					unfinishedStories.push(data[i]);
+				}
+			}
+
+		}
+	});	
+	return unfinishedStories;
 }

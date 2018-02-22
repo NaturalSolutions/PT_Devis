@@ -37,15 +37,11 @@ namespace Devis.Controllers
         }
 
         [ActionName("postfactuWBonus")]
-        public string PostFactuWBOnus(List<FacturationTotale> lesFactus)
+        public string PostFactuWBOnus(FacturationWBonus lesFactus)
         {
-            List<FacturationTotale> result = new List<FacturationTotale>();
-            foreach(FacturationTotale f in lesFactus)
-            {
-                f.updateValue();
-                result.Add(f);
-            }
-            return JsonConvert.SerializeObject(result);
+            //FacturationWBonus result = new FacturationWBonus();
+            lesFactus.updateValue();
+            return JsonConvert.SerializeObject(lesFactus);
         }
     }
 }

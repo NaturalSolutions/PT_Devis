@@ -86,7 +86,7 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 
 					}
 				})
-			},
+			},			
 
 			processDevis: function () {
 				var ressource = calculateTasks(this.sortedStories, this.projectId);
@@ -126,13 +126,13 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 					type: 'POST',
 					url: 'http://localhost/DevisApi/api/Facturation/postfactuWBonus',
 					dataType: 'json',
-					data: {"":res}
+					data: res
 				}).done(function (data) {
 					_this.factuTotal = data;
 					_this.drawFactu(data);
 					_this.drawRessource(data);
 					_this.factu = JSON.parse(data);
-
+					console.log('factufinale', _this.factu)
 					if (_this.sum.find(o => o.projet == _this.projectName)) {
 						//TODO proposer au choix de conserver ou d'écraser la précédente entrée
 						alert('trouvé');
@@ -209,37 +209,37 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 					obj["total"] = 0;
 					obj["totalBonus"] = 0;
 					//console.log('manage', this.stories, obj)
-					for (var i in this.factu[0]) {
+					for (var i in this.factu.normal) {
 						if (i == "amo") {
-							for (var j in this.factu[0][i]) {
-								obj["total"] += this.factu[0][i][j].value;
+							for (var j in this.factu.normal[i]) {
+								obj["total"] += this.factu.normal[i][j].sum;
 							}
 						}
 						if (i == "des") {
-							for (var j in this.factu[0][i]) {
-								obj["total"] += this.factu[0][i][j].value;
+							for (var j in this.factu.normal[i]) {
+								obj["total"] += this.factu.normal[i][j].sum;
 							}
 						}
 						if (i == "dev") {
-							for (var j in this.factu[0][i]) {
-								obj["total"] += this.factu[0][i][j].value;
+							for (var j in this.factu.normal[i]) {
+								obj["total"] += this.factu.normal[i][j].sum;
 							}
 						}
 					}
-					for (var i in this.factu[1]) {
+					for (var i in this.factu.bonus) {
 						if (i == "amo") {
-							for (var j in this.factu[1][i]) {
-								obj["totalBonus"] += this.factu[1][i][j].value;
+							for (var j in this.factu.bonus[i]) {
+								obj["totalBonus"] += this.factu.bonus[i][j].sum;
 							}
 						}
 						if (i == "des") {
-							for (var j in this.factu[1][i]) {
-								obj["totalBonus"] += this.factu[1][i][j].value;
+							for (var j in this.factu.bonus[i]) {
+								obj["totalBonus"] += this.factu.bonus[i][j].sum;
 							}
 						}
 						if (i == "dev") {
-							for (var j in this.factu[1][i]) {
-								obj["totalBonus"] += this.factu[1][i][j].value;
+							for (var j in this.factu.bonus[i]) {
+								obj["totalBonus"] += this.factu.bonus[i][j].sum;
 							}
 						}
 					}
@@ -249,22 +249,23 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 					for (var i in this.factu) {
 						if (i == "amo") {
 							for (var j in this.factu[i]) {
-								obj["total"] += this.factu[i][j].value;
+								obj["total"] += this.factu[i][j].sum;
 							}
 						}
 						if (i == "des") {
 							for (var j in this.factu[i]) {
-								obj["total"] += this.factu[i][j].value;
+								obj["total"] += this.factu[i][j].sum;
 							}
 						}
 						if (i == "dev") {
 							for (var j in this.factu[i]) {
-								obj["total"] += this.factu[i][j].value;
+								obj["total"] += this.factu[i][j].sum;
 							}
 						}
 					}
 				}
-				//console.log('glitch', obj)
+				obj['unfinished'] = getUnfinishedStories(this.projectId, this.epicLabel).map(x => x.name);
+				console.log('glitch', obj)
 				this.sum.push(obj);
 			},
 
@@ -311,7 +312,8 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 				//this.projectId = this.projectId;
 				var res = calculateTasks(tempSortedStories.stories, this.projectId, true);
 				var resbonus = calculateTasks(tempSortedStories.bonus, this.projectId, true);
-				this.onReturnFactuProcess([res, resbonus])
+
+				this.onReturnFactuProcess({normal : res, bonus : resbonus})
 				//console.log('Margoulette 17000', this.sum);
 
 			}
