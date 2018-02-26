@@ -50,7 +50,7 @@ namespace Devis.Models.BO
                 this.facturationDT = _tmpsDT * dt;
                 this.estimationDTCDP = this.facturationDT + this.facturationCDP;
             }
-            this.totalCumule = this.estimationDTCDP + this.totalTable;
+            this.totalCumule = this.estimationDTCDP + this.totalTable + this.support;
         }
     }
 }
