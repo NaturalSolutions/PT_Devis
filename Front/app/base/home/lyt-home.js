@@ -281,7 +281,15 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 					//data: {"docInfos":JSON.stringify(_this.sum)}
 					data: {"":_this.sum},
 				}).done(function (data) {
-					$("#linkContainer").append('<a href="file:///' + config.serverPath + data + '">Le fichier</a>')
+					data = JSON.parse(data);
+					$("#linkContainer").append('<a href="file:///' + config.serverPath + data + '">Le fichier</a>');
+					let blob = new Blob(data.encoded, { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+					console.log('des infos de BLOB', blob);
+					var link=document.createElement('a');
+					link.href=window.URL.createObjectURL(blob);
+					link.download=data.fileName;
+					link.click();
+					alert()
 				})
 			},
 

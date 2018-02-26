@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Xceed.Words.NET;
 using System.Reflection;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 namespace Devis.Models.BO
 {
@@ -20,6 +21,7 @@ namespace Devis.Models.BO
         string basePath { get; set; }
         public string fileName { get; set; }
         public bool isFactu { get; set; }
+        public byte[] encoded { get; set; }
         //Dictionary<string, object> elements { get; set; } = new Dictionary<string, object>()
         //{
         //    { "dateCreation", DateTime.Now },
@@ -59,6 +61,7 @@ namespace Devis.Models.BO
             //Save template to a new name same location
             //TODO : convenir d'une convention de nommage 
             this.final.SaveAs(this.basePath + @"\Content\" + this.fileName);
+            this.encoded = File.ReadAllBytes(this.basePath + @"\Content\" + this.fileName);
        }
 
         private DocX loadTemplate()

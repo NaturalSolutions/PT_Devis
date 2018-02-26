@@ -22,6 +22,7 @@ namespace Devis.Models.BO
         public string livraisonFinal;
         public string mois;
         public string annee;
+        public decimal support;
 
         public DevisElements(string _nomFichier, decimal _totalTable, int _tmpsCDP = 20 , int _tmpsDT = 7)
         {
@@ -33,9 +34,10 @@ namespace Devis.Models.BO
             this.numEdition = 1;
             this.nomFichier = _nomFichier;
             this.totalTable = _totalTable;
+            this.support = 8900m;
             DateTime firstOfTheMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
-            this.dateDebut = firstOfTheMonth.ToLongDateString();
-            this.livraisonFinal = firstOfTheMonth.AddMonths(1).AddDays(-1).ToLongDateString();
+            this.dateDebut = firstOfTheMonth.AddMonths(1).ToLongDateString();
+            this.livraisonFinal = firstOfTheMonth.AddMonths(2).AddDays(-1).ToLongDateString();
 
             //Calculs des factu CDP et DT
             using(DevisEntities cont = new DevisEntities())

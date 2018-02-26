@@ -32,14 +32,14 @@ namespace Devis.Controllers
         public string PostCreateDevis(List<sended> docInfos)
         {
             WordFile test = new WordFile(docInfos);
-            return test.fileName;
+            return JsonConvert.SerializeObject(test);
         }
 
         [ActionName("createFactu")]
         public string PostCreateFactu(List<sended>  docInfos)
         {   
             WordFile test = new WordFile(docInfos, true);
-            return test.fileName;
+            return JsonConvert.SerializeObject(test);
         }
 
         //[ActionName("createFactu")]
