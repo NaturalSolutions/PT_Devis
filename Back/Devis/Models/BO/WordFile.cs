@@ -47,12 +47,12 @@ namespace Devis.Models.BO
             this.tableSubTotalBonus = 0;
             if (isFactu)
             {
-                this.fileName = "Facturation_All_NS_Reneco_" + longDate.Year.ToString() + "_" + longDate.AddMonths(1).Month + ".docx";
+                this.fileName = "Etat_des_lieux_VS_Devis_initial_All_NS_Reneco_" + longDate.Year.ToString() + "_" + longDate.AddMonths(-1).Month + ".docx";
             }
             else
             {
                 
-                this.fileName = "Etat_des_lieux_VS_devis_initial_All_NS_Reneco_" + longDate.Year.ToString() + "_" + longDate.AddMonths(1).Month+ ".docx";
+                this.fileName = "Devis_All_NS_Reneco_" + longDate.Year.ToString() + "_" + longDate.AddMonths(1).Month+ ".docx";
             }
             this.final = loadTemplate();
             setValue("dateCreation", longDate.ToShortDateString());
@@ -87,7 +87,7 @@ namespace Devis.Models.BO
 
         private void insertElementsInFiles()
         {
-            DevisElements infos = new DevisElements(this.fileName, this.tableSubTotal + this.tableSubTotalBonus);
+            DevisElements infos = new DevisElements(this.fileName, this.tableSubTotal + this.tableSubTotalBonus, isFactu);
             JObject json = JObject.FromObject(infos);
             foreach (JProperty property in json.Properties())
             {
@@ -101,13 +101,13 @@ namespace Devis.Models.BO
             //Row templateToCopy = tab.Rows[1];
             foreach(sended insert in obj)
             {
-                Row toAdd = tab.InsertRow(tab.RowCount - 2);
-                //project
-                toAdd.Cells[0].InsertParagraph(insert.projet);
-                List bulletedList = null;                               
-                //stories
                 if(insert.stories != null)
                 {
+                    Row toAdd = tab.InsertRow(tab.RowCount - 2);
+                    //project
+                    toAdd.Cells[0].InsertParagraph(insert.projet);
+                    List bulletedList = null;                               
+                    //stories
                     foreach (string story in insert.stories)
                     {
                         if (bulletedList == null)
@@ -159,7 +159,6 @@ namespace Devis.Models.BO
                         this.tableSubTotalBonus += insert.totalBonus;
                     }
 
-                    tabBonus.Rows[tabBonus.RowCount - 1].Cells[1].ReplaceText("[totalTableBonus]", this.tableSubTotalBonus.ToString());
 
                     if (insert.unfinished != null && insert.unfinished[0] != null && insert.unfinished.Count > 0  )
                     {
@@ -182,6 +181,7 @@ namespace Devis.Models.BO
                         toAdd.Cells[1].InsertList(bulletedList);                        
                     }
                 }
+                tabBonus.Rows[tabBonus.RowCount - 1].Cells[1].ReplaceText("[totalTableBonus]", this.tableSubTotalBonus.ToString());
 
             }
         }

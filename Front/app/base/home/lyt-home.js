@@ -209,57 +209,63 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 					obj["total"] = 0;
 					obj["totalBonus"] = 0;
 					//console.log('manage', this.stories, obj)
-					for (var i in this.factu.normal) {
-						if (i == "amo") {
-							for (var j in this.factu.normal[i]) {
-								obj["total"] += this.factu.normal[i][j].sum;
+					if(this.factu && this.factu.normal){
+						for (var i in this.factu.normal) {
+							if (i == "amo") {
+								for (var j in this.factu.normal[i]) {
+									obj["total"] += this.factu.normal[i][j].sum;
+								}
 							}
-						}
-						if (i == "des") {
-							for (var j in this.factu.normal[i]) {
-								obj["total"] += this.factu.normal[i][j].sum;
+							if (i == "des") {
+								for (var j in this.factu.normal[i]) {
+									obj["total"] += this.factu.normal[i][j].sum;
+								}
 							}
-						}
-						if (i == "dev") {
-							for (var j in this.factu.normal[i]) {
-								obj["total"] += this.factu.normal[i][j].sum;
+							if (i == "dev") {
+								for (var j in this.factu.normal[i]) {
+									obj["total"] += this.factu.normal[i][j].sum;
+								}
 							}
 						}
 					}
-					for (var i in this.factu.bonus) {
-						if (i == "amo") {
-							for (var j in this.factu.bonus[i]) {
-								obj["totalBonus"] += this.factu.bonus[i][j].sum;
+					if(this.factu && this.factu.bonus){
+						for (var i in this.factu.bonus) {
+							if (i == "amo") {
+								for (var j in this.factu.bonus[i]) {
+									obj["totalBonus"] += this.factu.bonus[i][j].sum;
+								}
 							}
-						}
-						if (i == "des") {
-							for (var j in this.factu.bonus[i]) {
-								obj["totalBonus"] += this.factu.bonus[i][j].sum;
+							if (i == "des") {
+								for (var j in this.factu.bonus[i]) {
+									obj["totalBonus"] += this.factu.bonus[i][j].sum;
+								}
 							}
-						}
-						if (i == "dev") {
-							for (var j in this.factu.bonus[i]) {
-								obj["totalBonus"] += this.factu.bonus[i][j].sum;
+							if (i == "dev") {
+								for (var j in this.factu.bonus[i]) {
+									obj["totalBonus"] += this.factu.bonus[i][j].sum;
+								}
 							}
 						}
 					}
 				}else{
 					obj["stories"] = this.stories.map(o => o.name);
 					obj["total"] = 0;
-					for (var i in this.factu) {
-						if (i == "amo") {
-							for (var j in this.factu[i]) {
-								obj["total"] += this.factu[i][j].sum;
+					if(this.factu){
+						for (var i in this.factu) {
+							if (i == "amo") {
+								for (var j in this.factu[i]) {
+									obj["total"] += this.factu[i][j].sum;
+								}
 							}
-						}
-						if (i == "des") {
-							for (var j in this.factu[i]) {
-								obj["total"] += this.factu[i][j].sum;
+							if (i == "des") {
+								for (var j in this.factu[i]) {
+									obj["total"] += this.factu[i][j].sum;
+								}
 							}
-						}
-						if (i == "dev") {
-							for (var j in this.factu[i]) {
-								obj["total"] += this.factu[i][j].sum;
+							if (i == "dev") {
+								for (var j in this.factu[i]) {
+									obj["total"] += this.factu[i][j].sum;
+								}
 							}
 						}
 					}

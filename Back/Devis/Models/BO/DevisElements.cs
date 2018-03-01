@@ -24,12 +24,12 @@ namespace Devis.Models.BO
         public string annee;
         public decimal support;
 
-        public DevisElements(string _nomFichier, decimal _totalTable, int _tmpsCDP = 20 , int _tmpsDT = 7)
+        public DevisElements(string _nomFichier, decimal _totalTable, bool isFactu = false, int _tmpsCDP = 20 , int _tmpsDT = 7)
         {
             this.dateCreation = DateTime.Now.ToShortDateString();
             this.dateVersion = DateTime.Now.ToShortDateString();
             this.annee = DateTime.Now.Year.ToString();
-            this.mois = new CultureInfo("fr-FR").DateTimeFormat.GetMonthName(DateTime.Now.Month).ToString();
+            this.mois = new CultureInfo("fr-FR").DateTimeFormat.GetMonthName(isFactu ? DateTime.Now.AddMonths(-1).Month : DateTime.Now.Month).ToString();
             this.numVersion = 1.0m;
             this.numEdition = 1;
             this.nomFichier = _nomFichier;

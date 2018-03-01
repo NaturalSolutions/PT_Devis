@@ -40,7 +40,10 @@ namespace Devis.Controllers
         public string PostFactuWBOnus(FacturationWBonus lesFactus)
         {
             //FacturationWBonus result = new FacturationWBonus();
-            lesFactus.updateValue();
+            if(lesFactus != null)
+            {
+                lesFactus.updateValue();
+            }
             return JsonConvert.SerializeObject(lesFactus);
         }
     }

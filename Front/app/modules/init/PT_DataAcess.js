@@ -369,7 +369,7 @@ function getAcceptedStoriesAtDate(projectId, leftDate, rightDate, epic) {
 	//https://www.pivotaltracker.com/services/v5/projects/1621131/stories?with_label=commande 1 - 31 janvier 2018&with_state=accepted	
 	//https://www.pivotaltracker.com/services/v5/projects/720865/stories?accepted_after=2017-12-31T00:00:00.000Z&accepted_before=2018-02-01T00:00:00.000Z
 	$.ajax({
-		url: "https://www.pivotaltracker.com/services/v5/projects/" + projectId + "/stories?accepted_after=" + leftDate.add(-1, "days").toISOString() + "&accepted_before=" + rightDate.toISOString(),
+		url: "https://www.pivotaltracker.com/services/v5/projects/" + projectId + "/stories?with_label=" + epic + "&accepted_after=" + leftDate.add(-1, "days").toISOString() + "&accepted_before=" + rightDate.toISOString(),
 		//url: 'https://www.pivotaltracker.com/services/v5/projects/720865/stories?accepted_after=2017-12-31T00:00:00.000Z&accepted_before=' +rightDate.toISOString(),
 		beforeSend: function (xhr) {
 			xhr.setRequestHeader('X-TrackerToken', 'b4a752782f711a7c564221c2b0c2d5dc');
