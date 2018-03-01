@@ -36,8 +36,9 @@ namespace Devis.Controllers
         }
 
         [ActionName("createFactu")]
-        public string PostCreateFactu(List<sended>  docInfos)
-        {   
+        public string PostCreateFactu(FactuInfomations docInfos)
+        {
+            //FactuInfomations schtroudel = JsonConvert.DeserializeObject<FactuInfomations>(docInfos);
             WordFile test = new WordFile(docInfos, true);
             return JsonConvert.SerializeObject(test);
         }

@@ -97,6 +97,7 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 
 			onReturnProcess: function (res) {
 				var _this = this;
+				$('#projects').attr('disabled', true)
 				//console.log('le result', res);
 				$.ajax({
 					type: 'POST',
@@ -111,10 +112,14 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 					if (_this.sum.find(o => o.projet == _this.projectName)) {
 						//TODO proposer au choix de conserver ou d'écraser la précédente entrée
 						alert('trouvé');
+						$('#projects').attr('disabled', false)
+						
 					} else {
 						alert('onreturnprocess')
 						//console.log('onreturnprocess', data);
 						_this.manageProject();
+						$('#projects').attr('disabled', false)
+						
 					}
 				});
 			},
@@ -122,6 +127,8 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 			onReturnFactuProcess: function (res) {
 				var _this = this;
 				//console.log('le result factu', res);
+				$('#projects').attr('disabled', true)
+				
 				$.ajax({
 					type: 'POST',
 					url: 'http://localhost/DevisApi/api/Facturation/postfactuWBonus',
@@ -136,8 +143,10 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 					if (_this.sum.find(o => o.projet == _this.projectName)) {
 						//TODO proposer au choix de conserver ou d'écraser la précédente entrée
 						alert('trouvé');
+						$('#projects').attr('disabled', false)
 					} else {
 						_this.manageProject(true);
+						$('#projects').attr('disabled', false)
 					}
 				});
 			},
@@ -228,7 +237,7 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 							}
 						}
 					}
-					
+
 					if(this.factu && this.factu.bonus){
 						for (var i in this.factu.bonus) {
 							if (i == "amo") {
@@ -281,23 +290,47 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 				var complement = this.isFactu ? 'Factu' : 'Devis';
 				//console.log(_this.sum)
 				//console.log('http://localhost/DevisApi/api/WordFile/create' + complement, JSON.stringify(_this.sum));
-				$.ajax({
-					method: 'POST',
-					url: 'http://localhost/DevisApi/api/WordFile/create' + complement,
-					dataType: 'json',
-					//data: {"docInfos":JSON.stringify(_this.sum)}
-					data: {"":_this.sum},
-				}).done(function (data) {
-					data = JSON.parse(data);
-					$("#linkContainer").append('<a href="file:///' + config.serverPath + data + '">Le fichier</a>');
-					let blob = new Blob(data.encoded, { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-					console.log('des infos de BLOB', blob);
-					var link=document.createElement('a');
-					link.href=window.URL.createObjectURL(blob);
-					link.download=data.fileName;
-					link.click();
-					alert()
-				})
+				if(this.isFactu){
+					var obj = {}
+					obj.chefProjet = {jrs : parseInt($('#CDP').val()), we: parseInt($('#CDPW').val()), f: parseInt($('#CDPF').val())};
+					obj.directeur = {jrs : parseInt($('#DT').val()), we: parseInt($('#DTW').val()), f: parseInt($('#DTF').val())}
+					obj.projet = _this.sum
+					console.log('ZOBNJ',obj)
+					$.ajax({
+						method: 'POST',
+						url: 'http://localhost/DevisApi/api/WordFile/create' + complement,
+						dataType: 'json',
+						//data: {"docInfos":JSON.stringify(_this.sum)}
+						data: obj,
+					}).done(function (data) {
+						data = JSON.parse(data);
+						$("#linkContainer").append('<a href="file:///' + config.serverPath + data + '">Le fichier</a>');
+						let blob = new Blob(data.encoded, { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+						console.log('des infos de BLOB', blob);
+						var link=document.createElement('a');
+						link.href=window.URL.createObjectURL(blob);
+						link.download=data.fileName;
+						link.click();
+					})
+				}else{
+					$.ajax({
+						method: 'POST',
+						url: 'http://localhost/DevisApi/api/WordFile/create' + complement,
+						dataType: 'json',
+						//data: {"docInfos":JSON.stringify(_this.sum)}
+						data: {"":_this.sum},
+					}).done(function (data) {
+						data = JSON.parse(data);
+						$("#linkContainer").append('<a href="file:///' + config.serverPath + data + '">Le fichier</a>');
+						let blob = new Blob(data.encoded, { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+						console.log('des infos de BLOB', blob);
+						var link=document.createElement('a');
+						link.href=window.URL.createObjectURL(blob);
+						link.download=data.fileName;
+						link.click();
+					})
+
+				}
 			},
 
 			processFactu: function(){

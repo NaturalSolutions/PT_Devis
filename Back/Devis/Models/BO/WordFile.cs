@@ -38,7 +38,7 @@ namespace Devis.Models.BO
         //    { "livraisonFinal", new DateTime( DateTime.Now.Year, DateTime.Now.Month, 1).AddMonths(1).AddDays(-1)}
         //};
 
-        public WordFile(List<sended> obj, bool isFactu = false)
+        public WordFile(FactuInfomations obj, bool isFactu = false)
        {
             DateTime longDate = DateTime.Now;
             this.isFactu = isFactu;
@@ -54,6 +54,33 @@ namespace Devis.Models.BO
                 
                 this.fileName = "Devis_All_NS_Reneco_" + longDate.Year.ToString() + "_" + longDate.AddMonths(1).Month+ ".docx";
             }
+            obj.chefProjet.updateValue();
+            obj.directeur.updateValue();
+            this.final = loadTemplate();
+            setValue("dateCreation", longDate.ToShortDateString());
+            manageDevisTable(obj.projet);
+            insertElementsInFiles(obj.chefProjet.sum, obj.directeur.sum);
+            //Save template to a new name same location
+            //TODO : convenir d'une convention de nommage 
+            this.final.SaveAs(this.basePath + @"\Content\" + this.fileName);
+            this.encoded = File.ReadAllBytes(this.basePath + @"\Content\" + this.fileName);
+       }
+        public WordFile(List<sended> obj, bool isFactu = false)
+        {
+            DateTime longDate = DateTime.Now;
+            this.isFactu = isFactu;
+            this.basePath = System.AppDomain.CurrentDomain.BaseDirectory;
+            this.tableSubTotal = 0;
+            this.tableSubTotalBonus = 0;
+            if (isFactu)
+            {
+                this.fileName = "Etat_des_lieux_VS_Devis_initial_All_NS_Reneco_" + longDate.Year.ToString() + "_" + longDate.AddMonths(-1).Month + ".docx";
+            }
+            else
+            {
+
+                this.fileName = "Devis_All_NS_Reneco_" + longDate.Year.ToString() + "_" + longDate.AddMonths(1).Month + ".docx";
+            }
             this.final = loadTemplate();
             setValue("dateCreation", longDate.ToShortDateString());
             manageDevisTable(obj);
@@ -62,7 +89,7 @@ namespace Devis.Models.BO
             //TODO : convenir d'une convention de nommage 
             this.final.SaveAs(this.basePath + @"\Content\" + this.fileName);
             this.encoded = File.ReadAllBytes(this.basePath + @"\Content\" + this.fileName);
-       }
+        }
 
         private DocX loadTemplate()
         {
@@ -85,9 +112,9 @@ namespace Devis.Models.BO
             this.final.ReplaceText("[" + balise + "]", toSet);
         }
 
-        private void insertElementsInFiles()
+        private void insertElementsInFiles(decimal? tarCDP = null, decimal? tarDT = null)
         {
-            DevisElements infos = new DevisElements(this.fileName, this.tableSubTotal + this.tableSubTotalBonus, isFactu);
+            DevisElements infos = new DevisElements(this.fileName, this.tableSubTotal + this.tableSubTotalBonus, isFactu,tarCDP, tarDT);
             JObject json = JObject.FromObject(infos);
             foreach (JProperty property in json.Properties())
             {

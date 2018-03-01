@@ -201,6 +201,7 @@
     <Compile Include="Models\BO\DevisElements.cs" />
     <Compile Include="Models\BO\FacturationWBonus.cs" />
     <Compile Include="Models\BO\FileMaster.cs" />
+    <Compile Include="Models\BO\FactuInfomations.cs" />
     <Compile Include="Models\BO\SendedStruct.cs" />
     <Compile Include="Models\BO\WordFile.cs" />
     <Compile Include="Models\BO\FacturationTotale.cs" />

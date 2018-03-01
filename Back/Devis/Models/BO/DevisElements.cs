@@ -24,7 +24,7 @@ namespace Devis.Models.BO
         public string annee;
         public decimal support;
 
-        public DevisElements(string _nomFichier, decimal _totalTable, bool isFactu = false, int _tmpsCDP = 20 , int _tmpsDT = 7)
+        public DevisElements(string _nomFichier, decimal _totalTable, bool isFactu = false, decimal? _tarCDP = null , decimal? _tarDT = null)
         {
             this.dateCreation = DateTime.Now.ToShortDateString();
             this.dateVersion = DateTime.Now.ToShortDateString();
@@ -42,12 +42,20 @@ namespace Devis.Models.BO
             //Calculs des factu CDP et DT
             using(DevisEntities cont = new DevisEntities())
             {
-                //Atttention ta base est pourrie pense a changer les labels pour les finaux
-                decimal cdp = cont.Tarification.Where(s => s.Type == "CDP").Select(s => s.Tar5).First();
-                decimal dt = cont.Tarification.Where(s => s.Type == "Directeur").Select(s => s.Tar5).First();
-                //TODO possibiliter de saisir le nombre de jour
-                this.facturationCDP = _tmpsCDP * cdp;
-                this.facturationDT = _tmpsDT * dt;
+                if (_tarCDP == null)
+                {
+                    //Atttention ta base est pourrie pense a changer les labels pour les finaux
+                    decimal cdp = cont.Tarification.Where(s => s.Type == "CDP").Select(s => s.Tar5).First();
+                    decimal dt = cont.Tarification.Where(s => s.Type == "Directeur").Select(s => s.Tar5).First();
+                    //TODO possibiliter de saisir le nombre de jour
+                    this.facturationCDP = 20 * cdp;
+                    this.facturationDT = 7 * dt;
+                }
+                else
+                {
+                    this.facturationCDP = Convert.ToDecimal(_tarCDP);
+                    this.facturationDT = Convert.ToDecimal(_tarDT);
+                }
                 this.estimationDTCDP = this.facturationDT + this.facturationCDP;
             }
             this.totalCumule = this.estimationDTCDP + this.totalTable + this.support;
