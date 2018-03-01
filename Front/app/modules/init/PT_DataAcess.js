@@ -14,7 +14,6 @@ function getAllProjects() {
 		contentType: 'application/json',
 		processData: false,
 		success: function (data) {
-			//console.log('desdatas', data);
 			data.sort(function (a, b) {
 				if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
 				if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
@@ -102,8 +101,7 @@ function setError(url, tasksId) {
 	$('#errorLink').append('<a href="' + url + '">' + tasksId + '</a>')
 }
 
-function fillUserTab(tab, initiales, value, bonusState){
-	//console.log('les args envoyés a setté dans le tab', arguments)
+function fillUserTab(tab, initiales, value, bonusState) {
 	if (bonusState == '' || bonusState === undefined || bonusState == null) {
 		if (!tab.find(x => x.initials == initiales)) {
 			tab.push({ initials: initiales, value: parseInt(value) });
@@ -115,13 +113,11 @@ function fillUserTab(tab, initiales, value, bonusState){
 				tab[index].value = parseInt(value);
 			}
 		}
-	} else if(bonusState == 'we'){
+	} else if (bonusState == 'we') {
 		if (!tab.find(x => x.initials == initiales)) {
-			console.log('tout est la first entrance ', JSON.stringify(tab), arguments)
 			tab.push({ initials: initiales, valueWE: parseInt(value) });
 		} else {
 			var index = tab.findIndex(x => x.initials == initiales);
-			console.log('tout est la ', JSON.stringify(tab), arguments)
 			if (tab[index].valueWE) {
 				alert();
 				tab[index].valueWE += parseInt(value);
@@ -129,13 +125,11 @@ function fillUserTab(tab, initiales, value, bonusState){
 				tab[index].valueWE = parseInt(value);
 			}
 		}
-	}else if(bonusState == 'f'){
+	} else if (bonusState == 'f') {
 		if (!tab.find(x => x.initials == initiales)) {
-			console.log('tout est la first entrance ', JSON.stringify(tab), arguments)
 			tab.push({ initials: initiales, valueF: parseInt(value) });
 		} else {
 			var index = tab.findIndex(x => x.initials == initiales);
-			console.log('tout est la ', JSON.stringify(tab), arguments)
 			if (tab[index].valueF) {
 				alert();
 				tab[index].valueF += parseInt(value);
@@ -144,7 +138,6 @@ function fillUserTab(tab, initiales, value, bonusState){
 			}
 		}
 	}
-	//console.log('ava,ceênt fill ressource', tab)
 	return tab;
 }
 
@@ -164,7 +157,7 @@ function parseAndFillTasks(tasks, storyId, projectId, isFactu) {
 				isWE = true;
 				bonusState = 'we';
 				this.description = this.description.trim().replace(regexWE, "");
-			}else{
+			} else {
 				var regexF = /(\@[fF])$/;
 				if (this.description.trim().match(regexF)) {
 					bonusState = 'f';
@@ -185,20 +178,18 @@ function parseAndFillTasks(tasks, storyId, projectId, isFactu) {
 					var ownerBrut = regex.exec(this.description.trim());
 					var owners = ownerBrut[0].split("+");
 					this.description = this.description.trim().replace(regex, "");
-					//console.log('descro1', this.description)
 					//Cherche les durees dans le text
 					regex = /\d+(\+\d+)+/;
 					if (this.description.trim().match(regex)) {
 						var tabDureeBrut = regex.exec(this.description.trim());
 						this.description = this.description.trim().replace(regex, "");
 						var tabDuree = tabDureeBrut[0].split('+');
-						//console.log('la duree PP', tabDuree)
 						if (tabDuree.length != owners.length) {
 							alert('Probleme d\'estimation et initiales dans la tâche : ' + this.id + ' de la storie n° : ' + storyId + ' n\'est pas estimée.\r\n https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + '/tasks/' + this.id)
 							_this.setError('https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + '/tasks/' + this.id, this.id)
 						} else {
 							for (var i in owners) {
-								ressource = _this.fillUserTab(ressource,owners[i], tabDuree[i], bonusState);
+								ressource = _this.fillUserTab(ressource, owners[i], tabDuree[i], bonusState);
 							}
 						}
 						//this.description = this.description.trim().replace(regex, "");
@@ -217,19 +208,14 @@ function parseAndFillTasks(tasks, storyId, projectId, isFactu) {
 				regex = /[A-Z]{2,}$/;
 				var owner_initial;
 				if (this.description.trim().match(regex)) {
-					//console.log('infosIMPORTANT', this.description.trim().match(regex));
 					var taskMemeber = regex.exec(this.description.trim())[0];
 					owner_initial = taskMemeber;
 					this.description = this.description.trim().replace(regex, "");
-					//console.log('descro2', this.description)
 					//La duree
 					regex = /(\d)+$/;
-					//console.log('test20000', this.description.trim(), regex.exec(this.description.trim()))
 					if (regex.exec(this.description.trim())) {
 						var duree = regex.exec(this.description.trim())[0];
-						//console.log('la duree', duree)
 						this.description = this.description.trim().replace(regex, "");
-						console.log('Blabla', JSON.stringify(ressource))
 						ressource = _this.fillUserTab(ressource, owner_initial, duree, bonusState)
 
 					} else {
@@ -237,7 +223,6 @@ function parseAndFillTasks(tasks, storyId, projectId, isFactu) {
 						_this.setError('https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + '/tasks/' + this.id, this.id)
 					}
 				} else {
-					console.log('errInfos', this.description, regex);
 					alert('Probleme d\'initales dans la tâche : ' + this.id + ' de la storie n° : ' + storyId + ' n\'est attribué.\r\n https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + '/tasks/' + this.id)
 					_this.setError('https://www.pivotaltracker.com/n/projects/' + projectId + '/stories/' + storyId + '/tasks/' + this.id, this.id)
 				}
@@ -253,8 +238,6 @@ function parseAndFillTasks(tasks, storyId, projectId, isFactu) {
 
 		// }
 	});
-	//console.log('likjbhqefbvîujhoqzergvîjnkoerfb645645456+456+464566+64++4646+', ressource)
-	console.log('BlablaFinal', JSON.stringify(ressource))
 	return ressource;
 }
 
@@ -279,37 +262,33 @@ function getTasksInfos(projectId, storyId, toFactu = false) {
 	});
 	var ressource = [];
 	//On assigne les différentes informations aux taches (durée, éxecutant, imgCllass)
-	//console.log('mytemptask', myTempTasks)
 	if (!toFactu) {
 		var ressource = this.parseAndFillTasks(myTempTasks, storyId, projectId, false);
-		//console.log('zguegugugugugug', ressource)
 	} else {
 		var ressource = this.parseAndFillTasks(myTempTasks, storyId, projectId, true);
 	}
-	//console.log('in da task', ressource)
 	return ressource;
 }
 
 function manageResult(result, newInfos) {
-	console.log('newInfos', newInfos)
 	for (var i in newInfos) {
 		if (newInfos[i]) {
-			var index =result.findIndex(x => x.initials == newInfos[i].initials);
+			var index = result.findIndex(x => x.initials == newInfos[i].initials);
 			if (result.find(x => x.initials == newInfos[i].initials)) {
 				result[index].value += parseInt(newInfos[i].value);
-				if(newInfos[i].valueWE){
-					if(result[index].valueWE){
+				if (newInfos[i].valueWE) {
+					if (result[index].valueWE) {
 						result[index].valueWE += parseInt(newInfos[i].valueWE);
-					}else{
+					} else {
 						result[index].valueWE = parseInt(newInfos[i].valueWE);
-					}					
+					}
 				}
-				if(newInfos[i].valueF){
-					if(result[index].valueF){
+				if (newInfos[i].valueF) {
+					if (result[index].valueF) {
 						result[index].valueF += parseInt(newInfos[i].valueF);
-					}else{
+					} else {
 						result[index].valueF = parseInt(newInfos[i].valueF);
-					}					
+					}
 				}
 			} else {
 				result.push(newInfos[i]);
@@ -326,7 +305,6 @@ function calculateTasks(stories, projectId, toFactu = false) {
 		des: [],
 		dev: []
 	};
-	//console.log('les stories avant brassage', stories)
 	if (stories) {
 		for (var i in stories.amo) {
 			result.amo = manageResult(result.amo, getTasksInfos(projectId, stories.amo[i].id, toFactu));
@@ -335,11 +313,9 @@ function calculateTasks(stories, projectId, toFactu = false) {
 			result.des = manageResult(result.des, getTasksInfos(projectId, stories.des[j].id, toFactu))
 		}
 		for (var k in stories.dev) {
-			//console.log(stories.dev[k])
 			result.dev = manageResult(result.dev, getTasksInfos(projectId, stories.dev[k].id, toFactu))
 		}
 	}
-	//console.log('returnFactuProcess', result, toFactu);
 	if (!toFactu) {
 		Backbone.trigger('returnProcess', result);
 	} else {
@@ -414,22 +390,20 @@ function getAcceptedStoriesAtDate(projectId, leftDate, rightDate, epic) {
 
 				}
 			})
-			console.log('stories', { stories: stories, bonus: storiesBonus });
 		},
 		error: function () {
 			alert("Cannot get data");
 		}
 	});
-	
+
 	return { stories: stories, bonus: storiesBonus };
 }
 
 
 function getUnfinishedStories(projectId, epic) {
-	console.log('arguments', arguments)
 	var unfinishedStories = []
 	$.ajax({
-		url: 'https://www.pivotaltracker.com/services/v5/projects/' + projectId + '/stories?with_label=' + epic ,
+		url: 'https://www.pivotaltracker.com/services/v5/projects/' + projectId + '/stories?with_label=' + epic,
 		//url: 'https://www.pivotaltracker.com/services/v5/projects/720865/stories?accepted_after=2017-12-31T00:00:00.000Z&accepted_before=' +rightDate.toISOString(),
 		beforeSend: function (xhr) {
 			xhr.setRequestHeader('X-TrackerToken', 'b4a752782f711a7c564221c2b0c2d5dc');
@@ -440,14 +414,13 @@ function getUnfinishedStories(projectId, epic) {
 		contentType: 'application/json',
 		processData: false,
 		success: function (data) {
-			console.log('des infos sur les tacjes non finies', data);
-			for(var i in data){
-				if(data[i].current_state != 'accepted' && data[i].story_type != 'release'){
+			for (var i in data) {
+				if (data[i].current_state != 'accepted' && data[i].story_type != 'release') {
 					unfinishedStories.push(data[i]);
 				}
 			}
 
 		}
-	});	
+	});
 	return unfinishedStories;
 }

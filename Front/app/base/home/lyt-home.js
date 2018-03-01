@@ -22,9 +22,9 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 			initialize: function (options) {
 				this.allProjects = getAllProjects();
 				this.sum = [];
-				Backbone.on('returnProcess', this.onReturnProcess, this);				
+				Backbone.on('returnProcess', this.onReturnProcess, this);
 				Backbone.on('returnFactuProcess', this.onReturnFactuProcess, this);
-				
+
 			},
 
 			onShow: function (options) {
@@ -56,7 +56,7 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 			loadStories: function (e) {
 				var _this = this;
 				this.stories = null;
-				this.epicLabel =  $(e.currentTarget).find("option:selected").val().toLowerCase();
+				this.epicLabel = $(e.currentTarget).find("option:selected").val().toLowerCase();
 				this.stories = getEpicStories(this.projectId, this.epicLabel);
 				var storiesContainer = $('#stories');
 				var amoCont = storiesContainer.find('#amo');
@@ -86,19 +86,18 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 
 					}
 				})
-			},			
+			},
 
 			processDevis: function () {
 				var ressource = calculateTasks(this.sortedStories, this.projectId);
 			},
 			// processFactu: function () {
-				
+
 			// },
 
 			onReturnProcess: function (res) {
 				var _this = this;
 				$('#projects').attr('disabled', true)
-				//console.log('le result', res);
 				$.ajax({
 					type: 'POST',
 					url: 'http://localhost/DevisApi/api/Facturation/postFactu',
@@ -113,22 +112,20 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 						//TODO proposer au choix de conserver ou d'écraser la précédente entrée
 						alert('trouvé');
 						$('#projects').attr('disabled', false)
-						
+
 					} else {
 						alert('onreturnprocess')
-						//console.log('onreturnprocess', data);
 						_this.manageProject();
 						$('#projects').attr('disabled', false)
-						
+
 					}
 				});
 			},
 
 			onReturnFactuProcess: function (res) {
 				var _this = this;
-				//console.log('le result factu', res);
 				$('#projects').attr('disabled', true)
-				
+
 				$.ajax({
 					type: 'POST',
 					url: 'http://localhost/DevisApi/api/Facturation/postfactuWBonus',
@@ -139,7 +136,6 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 					_this.drawFactu(data);
 					_this.drawRessource(data);
 					_this.factu = JSON.parse(data);
-					console.log('factufinale', _this.factu)
 					if (_this.sum.find(o => o.projet == _this.projectName)) {
 						//TODO proposer au choix de conserver ou d'écraser la précédente entrée
 						alert('trouvé');
@@ -210,15 +206,12 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 				var obj = {};
 				obj["projet"] = this.projectName;
 				obj["total"] = 0;
-				if(isFactu){
-					//console.log('ikjhgbpmighboiBLIOUP¨PP', this.stories, isFactu)
+				if (isFactu) {
 					obj["stories"] = this.stories.stories.map(o => o.name);
-					//console.log("---------------------------------------------------", this.stories.bonus.map(o => o.name).length);
 					obj["storiesBonus"] = this.stories.bonus.map(o => o.name).length > 0 ? this.stories.bonus.map(o => o.name) : [""];
 					obj["total"] = 0;
 					obj["totalBonus"] = 0;
-					//console.log('manage', this.stories, obj)
-					if(this.factu && this.factu.normal){
+					if (this.factu && this.factu.normal) {
 						for (var i in this.factu.normal) {
 							if (i == "amo") {
 								for (var j in this.factu.normal[i]) {
@@ -238,7 +231,7 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 						}
 					}
 
-					if(this.factu && this.factu.bonus){
+					if (this.factu && this.factu.bonus) {
 						for (var i in this.factu.bonus) {
 							if (i == "amo") {
 								for (var j in this.factu.bonus[i]) {
@@ -257,10 +250,10 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 							}
 						}
 					}
-				}else{
+				} else {
 					obj["stories"] = this.stories.map(o => o.name);
 					obj["total"] = 0;
-					if(this.factu){
+					if (this.factu) {
 						for (var i in this.factu) {
 							if (i == "amo") {
 								for (var j in this.factu[i]) {
@@ -281,21 +274,17 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 					}
 				}
 				obj['unfinished'] = getUnfinishedStories(this.projectId, this.epicLabel).map(x => x.name);
-				console.log('glitch', obj)
 				this.sum.push(obj);
 			},
 
 			createFile: function () {
 				var _this = this;
 				var complement = this.isFactu ? 'Factu' : 'Devis';
-				//console.log(_this.sum)
-				//console.log('http://localhost/DevisApi/api/WordFile/create' + complement, JSON.stringify(_this.sum));
-				if(this.isFactu){
+				if (this.isFactu) {
 					var obj = {}
-					obj.chefProjet = {jrs : parseInt($('#CDP').val()), we: parseInt($('#CDPW').val()), f: parseInt($('#CDPF').val())};
-					obj.directeur = {jrs : parseInt($('#DT').val()), we: parseInt($('#DTW').val()), f: parseInt($('#DTF').val())}
+					obj.chefProjet = { jrs: parseInt($('#CDP').val()), we: parseInt($('#CDPW').val()), f: parseInt($('#CDPF').val()) };
+					obj.directeur = { jrs: parseInt($('#DT').val()), we: parseInt($('#DTW').val()), f: parseInt($('#DTF').val()) }
 					obj.projet = _this.sum
-					console.log('ZOBNJ',obj)
 					$.ajax({
 						method: 'POST',
 						url: 'http://localhost/DevisApi/api/WordFile/create' + complement,
@@ -306,40 +295,37 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 						data = JSON.parse(data);
 						$("#linkContainer").append('<a href="file:///' + config.serverPath + data + '">Le fichier</a>');
 						let blob = new Blob(data.encoded, { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-						console.log('des infos de BLOB', blob);
-						var link=document.createElement('a');
-						link.href=window.URL.createObjectURL(blob);
-						link.download=data.fileName;
+						var link = document.createElement('a');
+						link.href = window.URL.createObjectURL(blob);
+						link.download = data.fileName;
 						link.click();
 					})
-				}else{
+				} else {
 					$.ajax({
 						method: 'POST',
 						url: 'http://localhost/DevisApi/api/WordFile/create' + complement,
 						dataType: 'json',
 						//data: {"docInfos":JSON.stringify(_this.sum)}
-						data: {"":_this.sum},
+						data: { "": _this.sum },
 					}).done(function (data) {
 						data = JSON.parse(data);
 						$("#linkContainer").append('<a href="file:///' + config.serverPath + data + '">Le fichier</a>');
 						let blob = new Blob(data.encoded, { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
-						console.log('des infos de BLOB', blob);
-						var link=document.createElement('a');
-						link.href=window.URL.createObjectURL(blob);
-						link.download=data.fileName;
+						var link = document.createElement('a');
+						link.href = window.URL.createObjectURL(blob);
+						link.download = data.fileName;
 						link.click();
 					})
 
 				}
 			},
 
-			processFactu: function(){
+			processFactu: function () {
 				var firstDay, lastDay;
-				if($('#month').val()) {
-					//console.log('zguegdeouf',$('#month').val())			
+				if ($('#month').val()) {
 					firstDay = moment($('#month').val());
-					lastDay = moment();									
-					
+					lastDay = moment();
+
 				}
 				this.isFactu = true;
 				var tempSortedStories = getAcceptedStoriesAtDate(this.projectId, firstDay, lastDay, this.epicLabel);
@@ -348,21 +334,16 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 				// this.sortedStories.dev = tempSortedStories.dev;
 				this.stories.stories = [];
 				this.stories.bonus = [];
-				//console.log('glitch3' , tempSortedStories)	
-				for(var i in tempSortedStories.stories){
+				for (var i in tempSortedStories.stories) {
 					this.stories.stories = this.stories.stories.concat(tempSortedStories.stories[i]);
-					//console.log(tempSortedStories.bonus[i])
 					this.stories.bonus = this.stories.bonus.concat(tempSortedStories.bonus[i]);
-					//console.log('this.stories.bonus',this.stories.bonus)
 				}
 				//this.stories.stories = tempSortedStories.stories;
-				//console.log('glitch2' , this.stories)	
 				//this.projectId = this.projectId;
 				var res = calculateTasks(tempSortedStories.stories, this.projectId, true);
 				var resbonus = calculateTasks(tempSortedStories.bonus, this.projectId, true);
 
-				this.onReturnFactuProcess({normal : res, bonus : resbonus})
-				//console.log('Margoulette 17000', this.sum);
+				this.onReturnFactuProcess({ normal: res, bonus: resbonus })
 
 			}
 		});
