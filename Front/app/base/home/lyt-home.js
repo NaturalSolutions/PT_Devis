@@ -228,6 +228,7 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 							}
 						}
 					}
+					
 					if(this.factu && this.factu.bonus){
 						for (var i in this.factu.bonus) {
 							if (i == "amo") {
