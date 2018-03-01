@@ -106,20 +106,23 @@ namespace Devis.Models.BO
                 toAdd.Cells[0].InsertParagraph(insert.projet);
                 List bulletedList = null;                               
                 //stories
-                foreach (string story in insert.stories)
+                if(insert.stories != null)
                 {
-                    if (bulletedList == null)
+                    foreach (string story in insert.stories)
                     {
-                        bulletedList = this.final.AddList(story, 0, ListItemType.Bulleted, 1);
+                        if (bulletedList == null)
+                        {
+                            bulletedList = this.final.AddList(story, 0, ListItemType.Bulleted, 1);
+                        }
+                        else
+                        {
+                            this.final.AddListItem(bulletedList, story);
+                        }
                     }
-                    else
-                    {
-                        this.final.AddListItem(bulletedList, story);
-                    }
+                    toAdd.Cells[1].InsertList(bulletedList);
+                    //Cout
+                    toAdd.Cells[2].InsertParagraph(insert.total.ToString() + "€");
                 }
-                toAdd.Cells[1].InsertList(bulletedList);
-                //Cout
-                toAdd.Cells[2].InsertParagraph(insert.total.ToString() + "€");
                 this.tableSubTotal += insert.total;
             }
 
@@ -158,7 +161,7 @@ namespace Devis.Models.BO
 
                     tabBonus.Rows[tabBonus.RowCount - 1].Cells[1].ReplaceText("[totalTableBonus]", this.tableSubTotalBonus.ToString());
 
-                    if (insert.unfinished.Count > 0 && insert.unfinished[0] != null)
+                    if (insert.unfinished != null && insert.unfinished[0] != null && insert.unfinished.Count > 0  )
                     {
                         Row toAdd = tabUnfinished.InsertRow(tabUnfinished.RowCount - 1);
                         //project
