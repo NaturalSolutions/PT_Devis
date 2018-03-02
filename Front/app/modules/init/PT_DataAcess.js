@@ -108,8 +108,10 @@ function fillUserTab(tab, initiales, value, bonusState) {
 		} else {
 			var index = tab.findIndex(x => x.initials == initiales);
 			if (tab[index].value) {
+				
 				tab[index].value += parseInt(value);
 			} else {
+				
 				tab[index].value = parseInt(value);
 			}
 		}
@@ -151,7 +153,7 @@ function parseAndFillTasks(tasks, storyId, projectId, isFactu) {
 		var bonusState = null;
 		if (isFactu) {
 			var regexWE = /(\@[wW])$/;
-			if (this.description.trim().match(regexWE)) {
+			if (this.description.trim().match(regexWE)) {				
 				isWE = true;
 				bonusState = 'we';
 				this.description = this.description.trim().replace(regexWE, "");
@@ -265,6 +267,7 @@ function getTasksInfos(projectId, storyId, toFactu = false) {
 	} else {
 		var ressource = this.parseAndFillTasks(myTempTasks, storyId, projectId, true);
 	}
+	
 	return ressource;
 }
 
@@ -273,7 +276,13 @@ function manageResult(result, newInfos) {
 		if (newInfos[i]) {
 			var index = result.findIndex(x => x.initials == newInfos[i].initials);
 			if (result.find(x => x.initials == newInfos[i].initials)) {
-				result[index].value += parseInt(newInfos[i].value);
+				if (newInfos[i].value) {
+					if (result[index].value) {
+						result[index].value += parseInt(newInfos[i].value);
+					}else {
+						result[index].value = parseInt(newInfos[i].value);
+					}
+				}
 				if (newInfos[i].valueWE) {
 					if (result[index].valueWE) {
 						result[index].valueWE += parseInt(newInfos[i].valueWE);
