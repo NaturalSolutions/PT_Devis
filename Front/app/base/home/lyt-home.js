@@ -97,7 +97,9 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 
 			onReturnProcess: function (res) {
 				var _this = this;
-				$('#projects').attr('disabled', true)
+				$('#projects').attr('disabled', true);
+				$('#processFactu').attr('disabled', true);
+				
 				$.ajax({
 					type: 'POST',
 					url: 'http://localhost/DevisApi/api/Facturation/postFactu',
@@ -124,8 +126,8 @@ define(['marionette', 'config', 'moment', 'PT_DataAccess', 'i18n'],
 
 			onReturnFactuProcess: function (res) {
 				var _this = this;
-				$('#projects').attr('disabled', true)
-
+				$('#projects').attr('disabled', true);
+				$('#processDevis').attr('disabled', true);				
 				$.ajax({
 					type: 'POST',
 					url: 'http://localhost/DevisApi/api/Facturation/postfactuWBonus',

@@ -45,8 +45,8 @@ namespace Devis.Models.BO
                 if (_tarCDP == null)
                 {
                     //Atttention ta base est pourrie pense a changer les labels pour les finaux
-                    decimal cdp = cont.Tarification.Where(s => s.Type == "CDP").Select(s => s.Tar5).First();
-                    decimal dt = cont.Tarification.Where(s => s.Type == "Directeur").Select(s => s.Tar5).First();
+                    decimal cdp = cont.Tarification.Where(s => s.Type == "Chef de projet fonctionnel").Select(s => s.Tar5).First();
+                    decimal dt = cont.Tarification.Where(s => s.Type == "Directeur technique").Select(s => s.Tar5).First();
                     //TODO possibiliter de saisir le nombre de jour
                     this.facturationCDP = 20 * cdp;
                     this.facturationDT = 7 * dt;

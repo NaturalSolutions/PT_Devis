@@ -118,8 +118,7 @@ function fillUserTab(tab, initiales, value, bonusState) {
 			tab.push({ initials: initiales, valueWE: parseInt(value) });
 		} else {
 			var index = tab.findIndex(x => x.initials == initiales);
-			if (tab[index].valueWE) {
-				alert();
+			if (tab[index].valueWE) {				
 				tab[index].valueWE += parseInt(value);
 			} else {
 				tab[index].valueWE = parseInt(value);
@@ -130,8 +129,7 @@ function fillUserTab(tab, initiales, value, bonusState) {
 			tab.push({ initials: initiales, valueF: parseInt(value) });
 		} else {
 			var index = tab.findIndex(x => x.initials == initiales);
-			if (tab[index].valueF) {
-				alert();
+			if (tab[index].valueF) {				
 				tab[index].valueF += parseInt(value);
 			} else {
 				tab[index].valueF = parseInt(value);
