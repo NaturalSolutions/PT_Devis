@@ -170,6 +170,7 @@ function parseAndFillTasks(tasks, storyId, projectId, isFactu) {
 			//cherche "+" dans le text
 			var regex = /\+/
 			//Si n programming
+			//TODO tester le + sur la partie splité de la description
 			if (this.description.trim().match(regex)) {
 				//cheche les initals dans le text
 				//regex = /[A-Z]+(\+[A-Z]+)+/
@@ -179,9 +180,22 @@ function parseAndFillTasks(tasks, storyId, projectId, isFactu) {
 					var owners = ownerBrut[0].split("+");
 					this.description = this.description.trim().replace(regex, "");
 					//Cherche les durees dans le text
-					regex = /\d+(\+\d+)+/;
+					regex = /\(?\d+(\+\d+)+\)?/;
 					if (this.description.trim().match(regex)) {
-						var tabDureeBrut = regex.exec(this.description.trim());
+						var duree = 0;
+						var regexParenth = /\)$/;
+						var tabDureeBrut;
+						//Prise en compte de parenthese autour des estimation (utile pour la plannificationde sprint)
+						if(regexParenth.exec(this.description.trim())){
+							var cloneDescro = JSON.parse(JSON.stringify(this.description.trim()));
+							var appliedRegex = /[{()}]/g;
+							cloneDescro = cloneDescro.replace(appliedRegex,'');
+							console.log('cloneDescro',cloneDescro);							
+							tabDureeBrut = regex.exec(this.description.trim());
+							console.log('TRUC',tabDureeBrut);
+						}else{ 
+							tabDureeBrut = regex.exec(this.description.trim());
+						}
 						this.description = this.description.trim().replace(regex, "");
 						var tabDuree = tabDureeBrut[0].split('+');
 						if (tabDuree.length != owners.length) {
@@ -212,9 +226,20 @@ function parseAndFillTasks(tasks, storyId, projectId, isFactu) {
 					owner_initial = taskMemeber;
 					this.description = this.description.trim().replace(regex, "");
 					//La duree
-					regex = /(\d)+$/;
+					regex = /\(?(\d)+\)?$/;
 					if (regex.exec(this.description.trim())) {
-						var duree = regex.exec(this.description.trim())[0];
+						var regexParenth = /\)$/
+						var duree = 0;
+						//Prise en compte de parenthese autour des estimation (utile pour la plannificationde sprint)
+						if(regexParenth.exec(this.description.trim())){
+							var cloneDescro = JSON.parse(JSON.stringify(this.description.trim()));
+							var appliedRegex = /[{()}]/g;
+							cloneDescro = cloneDescro.replace(appliedRegex,'');
+							console.log('cloneDescro',cloneDescro);
+							duree = regex.exec(cloneDescro)[0];
+						}else{ 
+							duree = regex.exec(this.description.trim())[0];
+						}
 						this.description = this.description.trim().replace(regex, "");
 						ressource = _this.fillUserTab(ressource, owner_initial, duree, bonusState)
 
