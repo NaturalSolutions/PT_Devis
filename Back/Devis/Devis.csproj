@@ -203,6 +203,8 @@
     <Compile Include="Models\BO\FileMaster.cs" />
     <Compile Include="Models\BO\FactuInfomations.cs" />
     <Compile Include="Models\BO\SendedStruct.cs" />
+    <Compile Include="Models\BO\RessourceBL.cs" />
+    <Compile Include="Models\BO\TarificationBL.cs" />
     <Compile Include="Models\BO\WordFile.cs" />
     <Compile Include="Models\BO\FacturationTotale.cs" />
     <Compile Include="Models\BO\Facturation.cs" />
