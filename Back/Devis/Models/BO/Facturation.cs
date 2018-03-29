@@ -49,10 +49,57 @@ namespace Devis.Models.BO
             using (DevisEntities cont = new DevisEntities())
             {
                 Ressource res = cont.Ressource.Where(x => x.Initial == initials).Include(x => x.Tarification_Ressource).FirstOrDefault();
+                Tarification tar = new Tarification();
                 if (res != null)
-                {
+                {                   
                     List<long> typeId = res.Tarification_Ressource.Select(x => x.FK_Tarification).ToList();
-                    Tarification tar = cont.Tarification.Where(x => typeId.Contains(x.ID) && x.IsAmo == isAmo).FirstOrDefault();
+                    if (!res.isFullAMO())
+                    {
+                        tar = cont.Tarification.Where(x => typeId.Contains(x.ID) && x.IsAmo == isAmo).FirstOrDefault();
+                    }
+                    //SI l'user n'as que de tarifs amo
+                    else
+                    {
+                        if (isAmo)
+                        {
+                            //Si la tache est typé amo alors on prend la valeur tarifaire la plus cher
+                            List<Tarification> tars = cont.Tarification.Where(x => typeId.Contains(x.ID)).ToList();
+                            if(tars.Count > 1)
+                            {
+                                if(res.Niveau == 3)
+                                {
+                                    tar = tars.Select(s => s).OrderByDescending(s => s.Tar3).FirstOrDefault();
+                                }
+                                else
+                                {
+                                    tar = tars.Select(s => s).OrderByDescending(s => s.Tar5).FirstOrDefault();
+                                }
+                            }
+                            else
+                            {
+                                tar = tars.FirstOrDefault();
+                            }
+                        }
+                        else
+                        {
+                            List<Tarification> tars = cont.Tarification.Where(x => typeId.Contains(x.ID)).ToList();
+                            if (tars.Count > 1)
+                            {
+                                if (res.Niveau == 3)
+                                {
+                                    tar = tars.Select(s => s).OrderBy(s => s.Tar3).FirstOrDefault();
+                                }
+                                else
+                                {
+                                    tar = tars.Select(s => s).OrderBy(s => s.Tar5).FirstOrDefault();
+                                }
+                            }
+                            else
+                            {
+                                tar = tars.FirstOrDefault();
+                            }
+                        }
+                    }
                     decimal dailyValue = this.value != null ? Math.Round(Convert.ToDecimal(this.value / 7),2) : 0;
                     decimal dailyValueWE = this.valueWE != null ? Math.Round(Convert.ToDecimal(this.valueWE / 7), 2) : 0;
                     decimal dailyValueF = this.valueF != null ? Math.Round(Convert.ToDecimal(this.valueF / 7), 2) : 0;
